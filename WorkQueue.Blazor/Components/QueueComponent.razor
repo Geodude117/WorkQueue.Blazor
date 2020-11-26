@@ -1,0 +1,100 @@
+﻿@page "/QueueComponent/{QueueGroupID}"
+@inject QueueItemService QueueItemService
+@inject NavigationManager NavigationManager
+
+@if (QueueGroupID != null)
+{
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+
+            <h2 class="mat-h2">@CurrentQueueGroup.Name</h2>
+
+        </div>
+
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+
+            <MatTable Items="@queueItems" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+                <MatTableHeader>
+                    <th style="width:30px"></th>
+                    <th style="width:70px">Wescot Reference</th>
+                    <th style="width:500px">Customer Name</th>
+                    <th style="width:50px">Due Date</th>
+                    <th style="width:600px">Summary</th>
+                </MatTableHeader>
+                <MatTableRow>
+                    @if (context.DueDate <= DateTime.Now.AddDays(context.RagSet.LowValue))
+                        {
+                            <td data-sort="@context.RagSet.LowValue">
+                            <td style="width:30px;color:red"><MatIcon Icon="phone"></MatIcon></td>
+                            </td> }
+                                                else
+                                                {
+                                                    if (context.DueDate >= DateTime.Now.AddDays(context.RagSet.MidValue))
+                                                    {
+                            <td data-sort="@context.RagSet.HighValue">
+
+                            <td style="width:30px;color:darkgreen;align-content:center"><MatIcon Icon="phone"></MatIcon></td>
+                            </td> }
+                                                    else
+                                                    {
+                            <td data-sort="@context.RagSet.MidValue">
+
+                            <td style="width:30px;color:orange"><MatIcon Icon="phone"></MatIcon></td>
+
+                            </td>}
+                        }
+                    <td style="width:70px">@context.WescotRef</td>
+                    <td style="width:500px">@context.CustomerName</td>
+                    <td style="width:50px">@context.DueDate.ToShortDateString()</td>
+                    <td style="width:600px">@context.Summary</td>
+                </MatTableRow>
+            </MatTable>
+        </div>
+
+
+        
+    </div>
+
+</div>
+
+@code { 
+    [Parameter]
+    public string QueueGroupID { get; set; }
+
+    public QueueGroup CurrentQueueGroup = new QueueGroup();
+
+    private QueueItem[] queueItems { get; set; }
+
+    private CSU_Callback csuItem { get; set; }
+
+    private string _currentQueueItemId;
+
+    private bool dialogIsOpen = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        queueItems = await QueueItemService.GetQueueItems(int.Parse(QueueGroupID));
+        queueItems.Reverse();
+        //CurrentQueueGroup = await QueueGroupService.Get(QueueGroupID);
+        StateHasChanged();
+    }
+
+
+    private async void GetCSUCallbackItem(string queueItemId)
+    {
+        dialogIsOpen = true;
+        // Make call to services to reteieve the queue item ID
+    }
+
+    public void SelectionChangedEvent(object row)
+    {
+        
+
+            StateHasChanged();
+        }
+    }
+
+}
+

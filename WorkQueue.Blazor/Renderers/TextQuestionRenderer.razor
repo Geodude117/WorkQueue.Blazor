@@ -1,0 +1,10 @@
+﻿@using DomainData.Models.QuestionModels
+
+<MatTextField FullWidth="true" @bind-Value="@Question.Value" Label="@Question.Text"></MatTextField>
+<ValidationMessage For="@(() => Question.Value)" />
+
+@code {
+    [Parameter]
+    public TextQuestion Question { get; set; } = null;
+}
+

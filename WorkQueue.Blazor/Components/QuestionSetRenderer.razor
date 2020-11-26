@@ -1,0 +1,172 @@
+﻿
+@page "/QuestionSet/{GroupId:int}"
+@using RestSharp
+@using DomainData.Models.ViewModels
+@using Newtonsoft.Json
+
+@inject QuestionService _questionService
+@inject CSUCallbackService _csuService;
+
+
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+@if (model != null)
+{
+<EditForm Model="@model" OnSubmit="OnSubmit">
+
+    <div style="display: flex; flex-direction: column; padding: 10px;" class="mat-elevation-z5 mdc-theme--surface">
+        <div class="p-3">
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <h2>@model.DomainGroup.GroupName</h2>
+                    </div>
+
+                    @if (model != null)
+                    {
+                        foreach (var domainInfo in model.DomainInfoViewModels)
+                        {
+                            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"> </WorkQueue.Blazor.Components.ControlRenderer>
+                            </div>
+                        }
+                    }
+
+                    <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+        </div>
+
+    </div>
+
+    <MatDialog @bind-IsOpen="@_showConfirm">
+        @if (_validForm)
+        {
+            <MatDialogTitle>Complete Confirmation</MatDialogTitle>
+            <MatDivider></MatDivider>
+            <MatDialogContent>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <br />
+                <p>Are you sure you want to complete?</p>
+                <br />
+            </MatDialogContent>
+            <MatDivider></MatDivider>
+            <MatDialogActions>
+                <MatButton Type="button" OnClick="@OnValidSubmit">Yes</MatButton>
+                <MatButton Type="button" OnClick="@(e => { _showConfirm = false; })">No</MatButton>
+            </MatDialogActions>
+        }
+        else
+        {
+            <MatDialogTitle>Please check error</MatDialogTitle>
+            <MatDivider></MatDivider>
+            <MatDialogContent>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+            </MatDialogContent>
+            <MatDivider></MatDivider>
+            <MatDialogActions>
+                <MatButton Type="button" OnClick="@(e => { _showConfirm = false; })">Back</MatButton>
+            </MatDialogActions>
+        }
+    </MatDialog>
+
+    <MatDialog @bind-IsOpen="@_ShowCreatedPost">
+            <MatDialogTitle>Success</MatDialogTitle>
+            <MatDivider></MatDivider>
+            <MatDialogContent>
+                <br />
+                <p>Successfully created!</p>
+                <br />
+            </MatDialogContent>
+            <MatDivider></MatDivider>
+            <MatDialogActions>
+                <MatButton Type="button" OnClick="@(e => { _ShowCreatedPost = false; })">Back</MatButton>
+            </MatDialogActions>
+        
+    </MatDialog>
+
+</EditForm>
+}
+
+
+
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    private bool _showConfirm = false;
+
+    private bool _validForm = false;
+    private bool _ShowCreatedPost = false;
+
+    [Parameter]
+    public int GroupId { get; set; }
+
+    private DomainViewModel model { get; set; }
+
+    protected async override void OnInitialized()
+    {
+        try
+        {
+            model = await _questionService.GetQuestionSet(GroupId.ToString());
+
+            this.StateHasChanged();
+
+        }
+        catch (Exception ex)
+        {
+            var x = ex.Message;
+        }
+
+    }
+
+    private async void OnSubmit(EditContext context)
+    {
+        _showConfirm = true;
+
+        var result = context.ValidateObjectTree();
+
+        if (result)
+        {
+            _showConfirm = true;
+            _validForm = true;
+        }
+
+        this.StateHasChanged();
+
+
+    }
+
+    private async void OnValidSubmit()
+    {
+
+        var result = await _csuService.PostCSU(model, "Geo");
+
+        if(result)
+        {
+            model = await _questionService.GetQuestionSet(GroupId.ToString());
+            _showConfirm = false;
+
+            _ShowCreatedPost = true;
+        }
+        else
+        {
+            _showConfirm = false;
+        }
+
+        this.StateHasChanged();
+
+    }
+
+}

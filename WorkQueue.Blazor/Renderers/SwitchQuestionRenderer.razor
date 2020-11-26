@@ -1,0 +1,19 @@
+﻿@using DomainData.Models.QuestionModels
+
+<MatSlideToggle Label="@Question.Text" @bind-Value="@boolVal"></MatSlideToggle>
+
+@if (boolVal)
+{
+    <MatTextField FullWidth="true" @bind-Value="@Question.Value" TextArea="true"></MatTextField>
+    <ValidationMessage For="@(() => Question.Value)" />
+
+}
+
+@code
+        {
+    private bool boolVal = false;
+
+    [Parameter]
+    public TextQuestion Question { get; set; } = null;
+
+}

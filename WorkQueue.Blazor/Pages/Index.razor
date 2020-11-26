@@ -1,0 +1,72 @@
+﻿@page "/"
+@using Data
+@using RestSharp
+@using DomainData.Models
+
+
+@inject NavigationManager NavigationManager
+
+@if (domainGroup != null)
+{
+<div class="mat-layout-grid">
+    <div class="mat-layout-grid-inner">
+
+        @foreach (var group in domainGroup)
+        {
+        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+
+            <MatCard class="demo-mat-card">
+                <div class="demo-mat-card-content">
+                    <MatHeadline6 class="demo-mat-card-clean-margin p-3">
+                        @group.GroupName
+                    </MatHeadline6>
+                </div>
+                <MatCardContent>
+                    <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
+
+                        <WorkQueue.Blazor.Components.QueueComponent QueueGroupID="@group.ExternalReferenceId"></WorkQueue.Blazor.Components.QueueComponent>
+
+                    </MatBody2>
+                </MatCardContent> 
+                <MatCardActions>
+                    <MatCardActionButtons>
+                        <MatButton type="button" class="btn-color p-4" @onclick="(() => ButtonClick(group.Id))">Create</MatButton>
+                    </MatCardActionButtons>
+
+                    <MatCardActionIcons>
+                        <MatIconButton Icon="@MatIconNames.Pageview"></MatIconButton>
+                        <MatIconButton Icon="@MatIconNames.Create"></MatIconButton>
+                        <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+                    </MatCardActionIcons>
+                </MatCardActions>
+            </MatCard>
+        </div>
+         }
+
+    </div>
+</div>
+
+
+
+}
+
+@code{
+
+    private IEnumerable<DomainGroup> domainGroup;
+
+    protected override void OnInitialized()
+    {
+        var client = new RestClient("http://localhost:52388/");
+        var request = new RestRequest("api/DomainData/", Method.GET);
+        var queryResult = client.Execute<List<DomainGroup>>(request).Data;
+
+        domainGroup = (IEnumerable<DomainGroup>)queryResult;
+    }
+
+    public void ButtonClick(int Id)
+    {
+        NavigationManager.NavigateTo("/QuestionSet/" + Id);
+
+        var x = Id;
+    }
+}

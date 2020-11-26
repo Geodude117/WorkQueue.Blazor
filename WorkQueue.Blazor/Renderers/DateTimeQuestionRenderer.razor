@@ -1,0 +1,11 @@
+﻿@using DomainData.Models.QuestionModels
+
+<MatDatePicker FullWidth="true" Label="@Question.Text" @bind-Value="@Question.Value"></MatDatePicker>
+
+<ValidationMessage For="@(() => Question.Value)" />
+
+@code {
+    [Parameter]
+    public DateTimeQuestion Question { get; set; } = null;
+}
+

@@ -1,0 +1,14 @@
+﻿@using DomainData.Models.QuestionModels
+
+
+<MatCheckbox Label="@Question.Text" @bind-Value="@Question.Value" Indeterminate="true"></MatCheckbox>
+<MatButton OnClick="@(_ =>
+                                 {
+                                     Question.Value = null;
+                                 })">Clear</MatButton>
+<ValidationMessage For="@(() => Question.Value)" />
+
+@code {
+    [Parameter]
+    public BoolQuestion Question { get; set; } = null;
+}
