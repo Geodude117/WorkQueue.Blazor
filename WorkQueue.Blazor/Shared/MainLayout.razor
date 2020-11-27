@@ -1,14 +1,116 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+@implements IDisposable
+@using System.Reflection
+@using Microsoft.AspNetCore.Components
 
-<div class="main">
-    <div class="top-row px-4">
-    </div>
+@inject IJSRuntime Js
 
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
+<MatAnchorUtils></MatAnchorUtils>
+<MatAppBar  Style="z-index: 100;background-color: #1976d2" Class="mat">
+    <MatAppBarRow>
+        <MatAppBarSection>
+            <MatIconButton Icon="menu" OnClick="@((e) => MenuButtonClicked())"></MatIconButton>
+            <MatHidden BreakPoint="@MatBreakpoint.XS" Direction="@MatHiddenDirection.Down">
+                <MatAppBarTitle>Work Queue</MatAppBarTitle>
+            </MatHidden>
+            <MatHidden BreakPoint="@MatBreakpoint.SM" Direction="@MatHiddenDirection.Up">
+                <MatAppBarTitle>Big Top</MatAppBarTitle>
+            </MatHidden>
+        </MatAppBarSection>
+    </MatAppBarRow>
+</MatAppBar>
+
+<MatDrawerContainer Style="        width: 100vw;
+        height: 100vh;
+        background-color: #1976d2
+" Class="mat">
+
+    <MatHidden Breakpoint="@MatBreakpoint.SM" Direction="@MatHiddenDirection.Up" HiddenChanged="@ModelDrawerHiddenChanged">
+        <ChildContent>
+            <MatDrawer @bind-Opened="@_navMenuOpened" Mode="@MatDrawerMode.Modal">
+                <MatAppBarAdjust></MatAppBarAdjust>
+                <NavMenu></NavMenu>
+            </MatDrawer>
+        </ChildContent>
+        <ElseContent>
+            <MatDrawer @bind-Opened="@_navMenuOpened" Mode="@MatDrawerMode.Dismissible">
+                <MatAppBarAdjust></MatAppBarAdjust>
+                <NavMenu></NavMenu>
+            </MatDrawer>
+        </ElseContent>
+    </MatHidden>
+
+
+    <MatDrawerContent Class="mdc-theme--background">
+        <MatAppBarAdjust></MatAppBarAdjust>
+        <div class="body-wrapper">
+            @Body
+        </div>
+    </MatDrawerContent>
+
+</MatDrawerContainer>
+
+
+<MatSnackbar @bind-IsOpen="@lazySnackbarIsOpen">
+    <MatSnackbarContent>If you like MatBlazor, please put a star on GitHub.</MatSnackbarContent>
+    <MatSnackbarActions>
+        @* <MatButton Raised="true">Star</MatButton> *@
+        <MatIconButton Icon="@MatIconNames.Stars" Link="https://github.com/BlazorComponents/MatBlazor" style="color: white;" target="_blank"></MatIconButton>
+    </MatSnackbarActions>
+
+</MatSnackbar>
+
+
+@code {
+
+    BaseMatMenu Menu;
+
+
+    protected void ModelDrawerHiddenChanged(bool hidden)
+    {
+        if (!hidden)
+        {
+            _navMenuOpened = false;
+        }
+    }
+
+    bool lazySnackbarIsOpen = false;
+
+    bool _navMenuOpened = true;
+
+    void MenuButtonClicked()
+    {
+        _navMenuOpened = !_navMenuOpened;
+        this.StateHasChanged();
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Task.Delay(TimeSpan.FromSeconds(5))
+            .ContinueWith((_) => { this.lazySnackbarIsOpen = true; });
+    }
+
+    private BaseMatIconButton SmallMenuButton;
+    private BaseMatMenu SmallMenu;
+
+    public void OpenSmallMenu(MouseEventArgs e)
+    {
+        _ = this.SmallMenu.OpenAsync(SmallMenuButton.Ref);
+    }
+
+    public void Dispose()
+    {
+    }
+
+}
+
+

@@ -3,41 +3,31 @@
 @using RestSharp
 @using DomainData.Models
 
-<div class="top-row pl-4 navbar navbar-dark">
-    <img alt="Wescot" class="logo-img" src="css/images/logo_small.png" title="Wescot">
 
-    @*<a class="navbar-brand" href="">WorkQueue.Blazor</a>*@
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+<MatNavMenu >
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem  Href=""  AllowSelection="true"><MatIcon Icon="home"></MatIcon>&nbsp;Work Queues</MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-
-
-        @if (domainGroup != null)
-        {
-            @foreach (var group in domainGroup)
+            @if (domainGroup != null)
             {
-    <li class="nav-item px-3">
-            <a class="nav-link" href="@($"QuestionSet/{group.Id}")"> <span class="oi oi-plus" aria-hidden="true"></span> @group.GroupName</a>
+                @foreach (var group in domainGroup)
+                {
+                    <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="payment"></MatIcon>&nbsp; @group.GroupName</MatNavItem>
 
-        
-    </li>
+                   
+
+                }
 
             }
 
-        }
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
 
+</MatNavMenu>
 
-    </ul>
-</div>
 
 @code {
     private bool collapseNavMenu = true;
@@ -59,7 +49,7 @@
 
         domainGroup = (IEnumerable<DomainGroup>)queryResult;
 
-                this.StateHasChanged();
+        this.StateHasChanged();
     }
 
 }
