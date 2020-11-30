@@ -6,6 +6,6 @@ namespace DomainData.Models.UIModels
 {
     public enum CustomType
     {
-        StringType, IntType, DateTimeType, BoolType
+        StringType, IntType, DateTimeType, BoolType, DropdownType
     }
 }

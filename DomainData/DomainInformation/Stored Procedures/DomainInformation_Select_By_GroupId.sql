@@ -8,7 +8,8 @@ AS
 		[di].[Order],
 		[di].[GroupId],
 		[di].[TypeId],
-		[di].[Arguments]
+		[di].[Arguments],
+		[di].[HasValidation]
 	FROM
 		[dbo].[DomainInformation] di
 	where

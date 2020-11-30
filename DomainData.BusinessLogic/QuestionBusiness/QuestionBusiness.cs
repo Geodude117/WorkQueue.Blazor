@@ -6,6 +6,7 @@ using DomainData.Repository.DomainInformationRepo;
 using DomainData.Repository.DomainTypeRepo;
 using DomainData.Repository.UnitOfWork;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -53,7 +54,9 @@ namespace DomainData.BusinessLogic.QuestionViewModel
                     TextQuestion textQuestion = new TextQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
-                        Order = infoModel.DomainInformation.Order
+                        Order = infoModel.DomainInformation.Order,
+                        HasValidation = infoModel.DomainInformation.HasValidation
+
                     };
                     infoModel.TextQuestion = textQuestion;
                 }
@@ -62,7 +65,8 @@ namespace DomainData.BusinessLogic.QuestionViewModel
                     BoolQuestion boolQuestion = new BoolQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
-                        Order = infoModel.DomainInformation.Order
+                        Order = infoModel.DomainInformation.Order,
+                        HasValidation = infoModel.DomainInformation.HasValidation
                     };
                     infoModel.BoolQuestion = boolQuestion;
                 }
@@ -71,7 +75,8 @@ namespace DomainData.BusinessLogic.QuestionViewModel
                     IntQuestion intQuestion = new IntQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
-                        Order = infoModel.DomainInformation.Order
+                        Order = infoModel.DomainInformation.Order,
+                        HasValidation = infoModel.DomainInformation.HasValidation
                     };
                     infoModel.IntQuestion = intQuestion;
                 }
@@ -80,9 +85,22 @@ namespace DomainData.BusinessLogic.QuestionViewModel
                     DateTimeQuestion dateTimeQuestion = new DateTimeQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
-                        Order = infoModel.DomainInformation.Order
+                        Order = infoModel.DomainInformation.Order,
+                        HasValidation = infoModel.DomainInformation.HasValidation
+
                     };
                     infoModel.DateTimeQuestion = dateTimeQuestion;
+                }
+                else if (infoModel.DomainType.TypeName == CustomType.DropdownType.ToString())
+                {
+                    DropdownQuestion dropdownQuestion = new DropdownQuestion
+                    {
+                        Text = infoModel.DomainInformation.Title,
+                        Order = infoModel.DomainInformation.Order,
+                        HasValidation = infoModel.DomainInformation.HasValidation,
+                        Values = infoModel.DomainInformation.Arguments.Split(',').ToList()
+                    };
+                    infoModel.DropdownQuestion = dropdownQuestion;
                 }
 
                 domainInfoViewModel.Add(infoModel);

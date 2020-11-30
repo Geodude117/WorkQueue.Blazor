@@ -4,7 +4,8 @@
 	@Order INT,
 	@TypeId NVARCHAR(100),
 	@GroupId  INT,
-	@Arguments NVARCHAR(100)
+	@Arguments NVARCHAR(100),
+	@HasValidation BIT
 AS
 	INSERT INTO	[dbo].[DomainInformation]
 		(
@@ -13,7 +14,8 @@ AS
 			[Order],
 			[TypeId],
 			[GroupId],
-			[Arguments]
+			[Arguments],
+			[HasValidation]
 		)	
 	VALUES 
 		(
@@ -22,6 +24,7 @@ AS
 			@Order,
 			@TypeId,
 			@GroupId,
-			@Arguments
+			@Arguments,
+			@HasValidation
 		)
 RETURN SCOPE_IdENTITY()

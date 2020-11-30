@@ -1,6 +1,16 @@
-﻿<h3>DropdownQuestionRenderer</h3>
+﻿@using DomainData.Models.QuestionModels
 
+<MatSelect Label="@Question.Text" FullWidth="true" @bind-Value="@Question.Value">
+    <MatOptionString Value=""></MatOptionString>
+    @foreach (var item in Question.Values)
+    {
+        <MatOptionString Value="@item">@item</MatOptionString>
+    }
+</MatSelect>
+<ValidationMessage For="@(() => Question.Value)" />
 
 @code {
+    [Parameter]
+    public DropdownQuestion Question { get; set; } = null;
 
 }

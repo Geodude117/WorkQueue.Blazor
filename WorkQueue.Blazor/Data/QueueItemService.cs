@@ -24,10 +24,6 @@ namespace WorkQueue.Blazor.Data
             return result.ToArray();
         }
 
-        public async Task<bool> Post(QueueItem queueItem)
-        {
-            var result = await _httpClient.PostAsync(queueItem);
-            return result;
-        }
+       
     }
 }

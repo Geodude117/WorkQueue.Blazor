@@ -13,30 +13,35 @@ namespace WorkQueue.Blazor.Data
     public class CSUCallbackService
     {
         private readonly IHttpConnectionFactory<QItemHolder> _httpClientConnection;
+        private readonly IHttpConnectionFactory<CSU_Callback> _httpClientConnection2;
 
-        public CSUCallbackService([FromServices] IHttpConnectionFactory<QItemHolder> httpClientConnection)
+        public CSUCallbackService([FromServices] IHttpConnectionFactory<QItemHolder> httpClientConnection, [FromServices] IHttpConnectionFactory<CSU_Callback> httpClientConnection2)
         {
             _httpClientConnection = httpClientConnection;
+            _httpClientConnection2 = httpClientConnection2;
         }
 
         public async Task<bool> PostCSU(DomainViewModel model, string userName)
         {
-            var mappedObject = MapCSUObjectObject(model, userName);
+            var mappedObject = ApplyMap(model, userName);
 
             var result = await _httpClientConnection.PostAsync(mappedObject);
 
             return result;
         }
 
-        public QItemHolder MapCSUObjectObject (DomainViewModel model, string userName)
+        public async Task<CSU_Callback> Get(int Id)
+        {
+            var result = await _httpClientConnection2.GetAsync(Id);
+            return result;
+        }
+
+        public QItemHolder ApplyMap (DomainViewModel model, string userName)
         {
             QItemHolder qItemHolder = new QItemHolder();
           
             QueueItem queueItem = new QueueItem();
             CSU_Callback csuCallbackItem = new CSU_Callback();
-
-            PropertyInfo[] queueItemproperties = typeof(QueueItem).GetProperties();
-            PropertyInfo[] csuCallbackproperties = typeof(CSU_Callback).GetProperties();
 
             queueItem.CreatedDate = DateTime.Now;
             queueItem.CreatedBy = userName;
@@ -45,7 +50,22 @@ namespace WorkQueue.Blazor.Data
 
             csuCallbackItem.ReasonForTransfer = " ";
 
-            foreach (var domainItem in model.DomainInfoViewModels)
+            queueItem = MapQueueItem(model.DomainInfoViewModels, queueItem);
+
+            csuCallbackItem = MapCSUCallbackItem(model.DomainInfoViewModels, csuCallbackItem);
+
+            qItemHolder.queueItem = queueItem;
+            qItemHolder.TModel = csuCallbackItem;
+
+            return qItemHolder;
+        }
+
+
+        public QueueItem MapQueueItem (List<DomainInfoViewModel> list, QueueItem queueItem)
+        {
+            PropertyInfo[] queueItemproperties = typeof(QueueItem).GetProperties();
+
+            foreach (var domainItem in list)
             {
                 foreach (PropertyInfo property in queueItemproperties)
                 {
@@ -74,7 +94,13 @@ namespace WorkQueue.Blazor.Data
                 }
             }
 
-            foreach (var domainItem in model.DomainInfoViewModels)
+            return queueItem;
+        }
+        public CSU_Callback MapCSUCallbackItem(List<DomainInfoViewModel> list, CSU_Callback csuCallbackItem)
+        {
+            PropertyInfo[] csuCallbackproperties = typeof(CSU_Callback).GetProperties();
+
+            foreach (var domainItem in list)
             {
                 foreach (PropertyInfo property in csuCallbackproperties)
                 {
@@ -103,10 +129,8 @@ namespace WorkQueue.Blazor.Data
                 }
             }
 
-            qItemHolder.queueItem = queueItem;
-            qItemHolder.TModel = csuCallbackItem;
-
-            return qItemHolder;
+            return csuCallbackItem;
         }
+
     }
 }

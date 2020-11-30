@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace DomainData.Models.QuestionModels
 {
-    public class DateTimeQuestion : IQuestion
+    public class DropdownQuestion
     {
-        public DateTimeQuestion()
+        public DropdownQuestion()
         {
         }
-
         public string Text { get; set; }
         public int Order { get; set; }
         public bool HasValidation { get; set; }
 
-        [CustomValidation(typeof(TextQuestion), nameof(CustomRequired))]
-        public DateTime? Value { get; set; }
+        [CustomValidation(typeof(DropdownQuestion), nameof(CustomRequired))]
+        public string Value { get; set; }
+
+        public List<string> Values { get; set; }
 
         public int QuestionId { get; set; }
 
-        public static ValidationResult CustomRequired(DateTime value, ValidationContext vc)
+        public static ValidationResult CustomRequired(string value, ValidationContext vc)
         {
             // get has validtion property
             var containerType = vc.ObjectInstance.GetType();
@@ -36,7 +38,7 @@ namespace DomainData.Models.QuestionModels
 
             if (checkForNull)
             {
-                if (value == null)
+                if (string.IsNullOrEmpty(value))
                 {
                     result = new ValidationResult($"This {vc.ObjectType.Name} field is required.", new[] { vc.ObjectType.Name });
                 }

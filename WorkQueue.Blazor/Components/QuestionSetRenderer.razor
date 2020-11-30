@@ -17,34 +17,37 @@
 {
 <EditForm Model="@model" OnSubmit="OnSubmit">
 
-    <div style="display: flex; flex-direction: column; padding: 10px;" class="mat-elevation-z5 mdc-theme--surface">
-        <div class="p-3">
-            <div class="mat-layout-grid">
-                <div class="mat-layout-grid-inner">
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                        <h2>@model.DomainGroup.GroupName</h2>
-                    </div>
-
-                    @if (model != null)
-                    {
-                        foreach (var domainInfo in model.DomainInfoViewModels)
+    <div class="mat-elevation-z0" style="padding: 30px">
+        <div style="display: flex; flex-direction: column; padding: 10px;" class="mat-elevation-z5 mdc-theme--surface">
+            <div class="p-3">
+                <div class="mat-layout-grid">
+                    <div class="mat-layout-grid-inner">
+                      
+                        @if (model != null)
                         {
-                            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                                <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"> </WorkQueue.Blazor.Components.ControlRenderer>
-                            </div>
+                            foreach (var domainInfo in model.DomainInfoViewModels)
+                            {
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                    <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"></WorkQueue.Blazor.Components.ControlRenderer>
+                                </div>
+                            }
                         }
-                    }
 
-                    <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                        <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
+                        <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                            <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
+                        </div>
                     </div>
                 </div>
+                <br />
             </div>
 
-            <br />
         </div>
 
+
     </div>
+
+
+    
 
     <MatDialog @bind-IsOpen="@_showConfirm">
         @if (_validForm)
@@ -80,18 +83,18 @@
     </MatDialog>
 
     <MatDialog @bind-IsOpen="@_ShowCreatedPost">
-            <MatDialogTitle>Success</MatDialogTitle>
-            <MatDivider></MatDivider>
-            <MatDialogContent>
-                <br />
-                <p>Successfully created!</p>
-                <br />
-            </MatDialogContent>
-            <MatDivider></MatDivider>
-            <MatDialogActions>
-                <MatButton Type="button" OnClick="@(e => { _ShowCreatedPost = false; })">Back</MatButton>
-            </MatDialogActions>
-        
+        <MatDialogTitle>Success</MatDialogTitle>
+        <MatDivider></MatDivider>
+        <MatDialogContent>
+            <br />
+            <p>Successfully created!</p>
+            <br />
+        </MatDialogContent>
+        <MatDivider></MatDivider>
+        <MatDialogActions>
+            <MatButton Type="button" OnClick="@(e => { _ShowCreatedPost = false; })">Back</MatButton>
+        </MatDialogActions>
+
     </MatDialog>
 
 </EditForm>
@@ -128,7 +131,6 @@
         {
             var x = ex.Message;
         }
-
     }
 
     private async void OnSubmit(EditContext context)
@@ -144,13 +146,10 @@
         }
 
         this.StateHasChanged();
-
-
     }
 
     private async void OnValidSubmit()
     {
-
         var result = await _csuService.PostCSU(model, "Geo");
 
         if(result)
@@ -166,7 +165,5 @@
         }
 
         this.StateHasChanged();
-
     }
-
 }

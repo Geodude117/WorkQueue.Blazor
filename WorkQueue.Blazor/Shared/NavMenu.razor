@@ -4,25 +4,34 @@
 @using DomainData.Models
 
 
-<MatNavMenu >
+<MatNavMenu>
     <MatNavSubMenu>
         <MatNavSubMenuHeader>
-            <MatNavItem  Href=""  AllowSelection="true"><MatIcon Icon="home"></MatIcon>&nbsp;Work Queues</MatNavItem>
+            <MatNavItem Href="" AllowSelection="true"><MatIcon Icon="toc"></MatIcon>&nbsp;List</MatNavItem>
         </MatNavSubMenuHeader>
         <MatNavSubMenuList>
-
             @if (domainGroup != null)
             {
                 @foreach (var group in domainGroup)
                 {
-                    <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="payment"></MatIcon>&nbsp; @group.GroupName</MatNavItem>
-
-                   
-
+                    <MatNavItem Href="@($"QueueComponent/{group.ExternalReferenceId}/{group.GroupName}")"><MatIcon Icon="table_view"></MatIcon>&nbsp; @group.GroupName</MatNavItem>
                 }
-
             }
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
 
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem Href="" AllowSelection="true"><MatIcon Icon="create"></MatIcon>&nbsp;Create</MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+            @if (domainGroup != null)
+            {
+                @foreach (var group in domainGroup)
+                {
+                    <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="dynamic_form"></MatIcon>&nbsp;@group.GroupName</MatNavItem>
+                }
+            }
         </MatNavSubMenuList>
     </MatNavSubMenu>
 

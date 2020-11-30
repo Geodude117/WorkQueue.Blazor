@@ -9,7 +9,6 @@ namespace DomainData.Models.QuestionModels
     {
         public TextQuestion()
         {
-            this.HasValidation = false;
         }
 
         public string Text { get ; set ; }
@@ -39,7 +38,7 @@ namespace DomainData.Models.QuestionModels
             {
                 if (string.IsNullOrEmpty(value))
                 {
-                    result = new ValidationResult($"The {vc.MemberName} field is required.", new[] { vc.MemberName });
+                    result = new ValidationResult($"The {vc.ObjectType.Name} field is required.", new[] { vc.ObjectType.Name });
                 }
             }
 

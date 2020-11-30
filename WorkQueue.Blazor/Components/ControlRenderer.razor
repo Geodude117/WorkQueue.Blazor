@@ -18,7 +18,6 @@
         <WorkQueue.Blazor.Renderers.TextQuestionRenderer Question="(TextQuestion)domainInfoViewModel.TextQuestion">
         </WorkQueue.Blazor.Renderers.TextQuestionRenderer>
     }
-
 }
 
 @if (domainInfoViewModel.DomainType.TypeName == CustomType.BoolType.ToString())
@@ -42,6 +41,14 @@
     if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.NumberQuestionRenderer.ToString())
     {
         <WorkQueue.Blazor.Renderers.IntQuestionRenderer Question="(IntQuestion)domainInfoViewModel.IntQuestion"></WorkQueue.Blazor.Renderers.IntQuestionRenderer>
+    }
+}
+
+@if (domainInfoViewModel.DomainType.TypeName == CustomType.DropdownType.ToString())
+{
+    if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.DropDownQuestionRenderer.ToString())
+    {
+        <WorkQueue.Blazor.Renderers.DropdownQuestionRenderer Question="(DropdownQuestion)domainInfoViewModel.DropdownQuestion "></WorkQueue.Blazor.Renderers.DropdownQuestionRenderer>
     }
 }
 

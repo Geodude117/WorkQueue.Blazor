@@ -6,7 +6,9 @@
 		[di].[ObjectMapping],
 		[di].[Order],
 		[di].[GroupId],
-		[di].[Arguments]
+		[di].[Arguments],
+		[di].[HasValidation]
+
 	FROM
 		[dbo].[DomainInformation] di
 RETURN 0

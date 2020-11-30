@@ -17,6 +17,7 @@ namespace DomainData.Models.ViewModels
         public BoolQuestion BoolQuestion { get; set; }
         public IntQuestion IntQuestion { get; set; }
         public DateTimeQuestion DateTimeQuestion { get; set; }
+        public DropdownQuestion DropdownQuestion { get; set; }
 
 
     }
