@@ -6,15 +6,14 @@
 
 @if (QueueGroupID != null)
 {
-<div class="mat-elevation-z0" style="padding: 30px">
-
+<div class="mat-elevation-z5" style="padding: 10px">
     <MatCard class="demo-mat-card">
         <MatCardContent>
             <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
                 <div class="mat-layout-grid">
                     <div class="mat-layout-grid-inner">
                         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                            <h2 class="mat-h2">@QueueGroupName</h2>
+                            <MatH6 class="mat-h2">@QueueGroupName</MatH6>
                         </div>
                         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
                             <MatTable Items="@queueItems" AllowSelection="true" SelectionChanged="SelectionChangedEvent">

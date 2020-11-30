@@ -17,31 +17,34 @@
 {
 <EditForm Model="@model" OnSubmit="OnSubmit">
 
-    <div class="mat-elevation-z0" style="padding: 30px">
+    <div class="mat-elevation-z5" style="padding: 30px">
         <div style="display: flex; flex-direction: column; padding: 10px;" class="mat-elevation-z5 mdc-theme--surface">
-            <div class="p-3">
-                <div class="mat-layout-grid">
-                    <div class="mat-layout-grid-inner">
-                      
-                        @if (model != null)
-                        {
-                            foreach (var domainInfo in model.DomainInfoViewModels)
-                            {
-                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                                    <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"></WorkQueue.Blazor.Components.ControlRenderer>
-                                </div>
-                            }
-                        }
+        <div class="p-3">
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <h2>@model.DomainGroup.GroupName</h2>
+                    </div>
 
-                        <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                            <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
-                        </div>
+                    @if (model != null)
+                    {
+                        foreach (var domainInfo in model.DomainInfoViewModels)
+                        {
+                            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"></WorkQueue.Blazor.Components.ControlRenderer>
+                            </div>
+                        }
+                    }
+
+                    <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
                     </div>
                 </div>
-                <br />
             </div>
-
+            <br />
         </div>
+
+    </div>
 
 
     </div>

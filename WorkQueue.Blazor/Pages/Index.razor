@@ -4,8 +4,22 @@
 @inject QueueGroupService QueueGroupService
 
 @inject NavigationManager NavigationManager
+<div class="container-fluid">
+    <div class="p-2"></div>
     <div class="mat-elevation-z5" style="padding: 20px">
-        <MatH3>List of Work Queues</MatH3>
+        <MatH6>Select Work Queue</MatH6>
+        <br />
+        <MatSelectValue Label="Select Queue" @bind-Value="@selectedGroupID" Items="@groupData" ValueSelector="@(i=>i.Id.ToString())">
+            <ItemTemplate>
+                <span>@context.Name</span>
+            </ItemTemplate>
+        </MatSelectValue>
+        <div class="p-1"></div>
+        <MatButton Style="color:#1976d2" OnClick="@ViewQueue">View Queues</MatButton>
+    </div>
+    <div class="p-2"></div>
+    <div class="mat-elevation-z5" style="padding: 20px">
+        <MatH6>Quick View</MatH6>
         <br />
         @if (queueGroups != null)
         {
@@ -29,41 +43,35 @@
             </MatAccordion>
         }
     </div>
-
-    <br />
-    <br />
-
+    <div class="p-2"></div>
     @if (domainGroups != null)
     {
         <div class="mat-elevation-z5" style="padding: 20px">
+            <MatH6>List of Domain Groups</MatH6>
             <div class="mat-layout-grid">
                 <div class="mat-layout-grid-inner">
                     @foreach (var domainGroup in domainGroups)
                     {
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
                             <MatCard class="demo-mat-card">
                                 <div class="demo-mat-card-content">
                                     <MatHeadline6 class="demo-mat-card-clean-margin">
-                                        Our Changing Planet
+                                        <div class="p-1">Create @domainGroup.GroupName</div>
                                     </MatHeadline6>
-                                    <MatSubtitle2 class="demo-mat-card-clean-margin">
-                                        by Kurt Wagner
-                                    </MatSubtitle2>
                                 </div>
                                 <MatCardContent>
-                                    <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
-                                    <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                                        Visit ten places on our planet that are undergoing the biggest changes today.
-                                    </MatBody2>
+                                    <MatCardMedia Wide="true">
+                                        <div style="position:center">
+                                            <MatIcon Style="font-size:180px; padding-left:80px" Icon="call"></MatIcon>
+                                        </div>
+                                    </MatCardMedia>
                                 </MatCardContent>
                                 <MatCardActions>
                                     <MatCardActionButtons>
-                                        <MatButton>Read</MatButton>
-                                        <MatButton>Bookmark</MatButton>
+                                        <MatButton Style="color:#1976d2">Create</MatButton>
+                                        <MatButton Style="color:#1976d2">View Queues</MatButton>
                                     </MatCardActionButtons>
-
                                     <MatCardActionIcons>
-                                        <MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>
                                         <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
                                     </MatCardActionIcons>
                                 </MatCardActions>
@@ -77,6 +85,8 @@
         </div>
 
     }
+</div>
+
 
     @code
 {
@@ -84,11 +94,27 @@
         private IEnumerable<QueueGroup> queueGroups;
         private IEnumerable<DomainGroup> domainGroups;
 
+        string selectedGroupID;
+        List<GroupData> groupData = new List<GroupData>();
+
+        private class GroupData
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
         protected async override void OnInitialized()
         {
             queueGroups = await QueueGroupService.GetAll();
 
+            foreach (var item in queueGroups)
+            {
+                GroupData data = new GroupData();
+                data.Id = item.QueueGroupID;
+                data.Name = item.Name;
 
+                groupData.Add(data);
+            }
             var client = new RestClient("http://localhost:52388/");
             var request = new RestRequest("api/DomainData/", Method.GET);
             var queryResult = client.Execute<List<DomainGroup>>(request).Data;
@@ -98,10 +124,13 @@
 
         }
 
-        public void ButtonClick(int Id)
+        private void ViewQueue()
         {
-            NavigationManager.NavigateTo("/QuestionSet/" + Id);
-            var x = Id;
+            int parsedSelectedGroupId = int.Parse(selectedGroupID);
+
+            string selectedGroupName = groupData.Single(s => s.Id == parsedSelectedGroupId).Name;
+
+            NavigationManager.NavigateTo("QueueComponent/" + selectedGroupID + "/" + selectedGroupName);
         }
 
     }
