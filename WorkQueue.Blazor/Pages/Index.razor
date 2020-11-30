@@ -1,50 +1,101 @@
 ﻿@page "/"
-@using Data
 @using RestSharp
 @using DomainData.Models
-
+@inject QueueGroupService QueueGroupService
 
 @inject NavigationManager NavigationManager
+    <div class="mat-elevation-z5" style="padding: 20px">
+        <MatH3>List of Work Queues</MatH3>
+        <br />
+        @if (queueGroups != null)
+        {
+            <MatAccordion Multi="true">
+                @foreach (var group in queueGroups)
+                {
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                        <MatExpansionPanel>
+                            <MatExpansionPanelSummary>
+                                <MatExpansionPanelHeader>
+                                    @group.Name
+                                </MatExpansionPanelHeader>
+                            </MatExpansionPanelSummary>
+                            <MatExpansionPanelDetails>
+                                <WorkQueue.Blazor.Components.QueueComponent QueueGroupID="@group.QueueGroupID.ToString()" QueueGroupName="@group.Name"></WorkQueue.Blazor.Components.QueueComponent>
+                            </MatExpansionPanelDetails>
+                        </MatExpansionPanel>
 
-@if (domainGroup != null)
-{
-<div class="mat-elevation-z0" style="padding: 30px">
+                    </div>
+                }
+            </MatAccordion>
+        }
+    </div>
 
-    <MatH3>List of Work Queues</MatH3>
     <br />
-    <MatAccordion Multi="true">
-        @foreach (var group in domainGroup)
-        {
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                <MatExpansionPanel>
-                    <MatExpansionPanelSummary>
-                        <MatExpansionPanelHeader>
-                            @group.GroupName
-                        </MatExpansionPanelHeader>
-                    </MatExpansionPanelSummary>
-                    <MatExpansionPanelDetails>
-                        <WorkQueue.Blazor.Components.QueueComponent QueueGroupID="@group.ExternalReferenceId" QueueGroupName="@group.GroupName"></WorkQueue.Blazor.Components.QueueComponent>
-                    </MatExpansionPanelDetails>
-                </MatExpansionPanel>
+    <br />
 
+    @if (domainGroups != null)
+    {
+        <div class="mat-elevation-z5" style="padding: 20px">
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    @foreach (var domainGroup in domainGroups)
+                    {
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                            <MatCard class="demo-mat-card">
+                                <div class="demo-mat-card-content">
+                                    <MatHeadline6 class="demo-mat-card-clean-margin">
+                                        Our Changing Planet
+                                    </MatHeadline6>
+                                    <MatSubtitle2 class="demo-mat-card-clean-margin">
+                                        by Kurt Wagner
+                                    </MatSubtitle2>
+                                </div>
+                                <MatCardContent>
+                                    <MatCardMedia Wide="true" ImageUrl="https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg"></MatCardMedia>
+                                    <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
+                                        Visit ten places on our planet that are undergoing the biggest changes today.
+                                    </MatBody2>
+                                </MatCardContent>
+                                <MatCardActions>
+                                    <MatCardActionButtons>
+                                        <MatButton>Read</MatButton>
+                                        <MatButton>Bookmark</MatButton>
+                                    </MatCardActionButtons>
+
+                                    <MatCardActionIcons>
+                                        <MatIconButton Icon="@MatIconNames.Favorite"></MatIconButton>
+                                        <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+                                    </MatCardActionIcons>
+                                </MatCardActions>
+                            </MatCard>
+                        </div>
+                    }
+                </div>
             </div>
-        }
-    </MatAccordion>
-</div>
-        
-        }
 
-        @code{
 
-    private IEnumerable<DomainGroup> domainGroup;
+        </div>
 
-        protected override void OnInitialized()
+    }
+
+    @code
+{
+
+        private IEnumerable<QueueGroup> queueGroups;
+        private IEnumerable<DomainGroup> domainGroups;
+
+        protected async override void OnInitialized()
         {
+            queueGroups = await QueueGroupService.GetAll();
+
+
             var client = new RestClient("http://localhost:52388/");
             var request = new RestRequest("api/DomainData/", Method.GET);
             var queryResult = client.Execute<List<DomainGroup>>(request).Data;
 
-            domainGroup = (IEnumerable<DomainGroup>)queryResult;
+            domainGroups = (IEnumerable<DomainGroup>)queryResult;
+            this.StateHasChanged();
+
         }
 
         public void ButtonClick(int Id)
@@ -52,4 +103,5 @@
             NavigationManager.NavigateTo("/QuestionSet/" + Id);
             var x = Id;
         }
-        }
+
+    }

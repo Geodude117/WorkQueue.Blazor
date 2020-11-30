@@ -3,6 +3,7 @@
 @using RestSharp
 @using DomainData.Models
 
+@inject QueueGroupService QueueGroupService
 
 <MatNavMenu>
     <MatNavSubMenu>
@@ -10,11 +11,11 @@
             <MatNavItem Href="" AllowSelection="true"><MatIcon Icon="toc"></MatIcon>&nbsp;List</MatNavItem>
         </MatNavSubMenuHeader>
         <MatNavSubMenuList>
-            @if (domainGroup != null)
+            @if (queueGroups != null)
             {
-                @foreach (var group in domainGroup)
+                @foreach (var group in queueGroups)
                 {
-                    <MatNavItem Href="@($"QueueComponent/{group.ExternalReferenceId}/{group.GroupName}")"><MatIcon Icon="table_view"></MatIcon>&nbsp; @group.GroupName</MatNavItem>
+                    <MatNavItem Href="@($"QueueComponent/{group.QueueGroupID}/{group.Name}")"><MatIcon Icon="table_view"></MatIcon>&nbsp; @group.Name</MatNavItem>
                 }
             }
         </MatNavSubMenuList>
@@ -49,9 +50,13 @@
     }
 
     private IEnumerable<DomainGroup> domainGroup;
+    private IEnumerable<QueueGroup> queueGroups;
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
+        queueGroups = await QueueGroupService.GetAll();
+
+
         var client = new RestClient("http://localhost:52388/");
         var request = new RestRequest("api/DomainData/", Method.GET);
         var queryResult = client.Execute<List<DomainGroup>>(request).Data;

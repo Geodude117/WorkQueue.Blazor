@@ -36,7 +36,7 @@ namespace WorkQueue.Blazor
             services.AddServerSideBlazor();
 
             services.AddHttpContextAccessor();
-
+            services.AddSingleton<QueueGroupService>();
             services.AddSingleton<QueueItemService>();
             services.AddSingleton<QuestionService>();
             services.AddSingleton<CSUCallbackService>();

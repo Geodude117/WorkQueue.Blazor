@@ -20,16 +20,16 @@
                             <MatTable Items="@queueItems" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
                                 <MatTableHeader>
                                     <th style="width:30px"></th>
-                                    <th style="width:70px">Wescot Reference</th>
-                                    <th style="width:500px">Customer Name</th>
+                                    <th style="width:75px">Wescot Reference</th>
+                                    <th style="width:600px">Customer Name</th>
                                     <th style="width:50px">Due Date</th>
-                                    <th style="width:600px">Summary</th>
+                                    <th style="width:625px">Summary</th>
                                 </MatTableHeader>
                                 <MatTableRow>
                                     @if (context.DueDate <= DateTime.Now.AddDays(context.RagSet.LowValue))
                                         {
                 <td data-sort="@context.RagSet.LowValue">
-                <td style="width:30px;color:red"><MatIcon Icon="phone"></MatIcon></td>
+                <td style="width:30px;color:red"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
                 </td> }
                 else
                 {
@@ -37,20 +37,20 @@
                     {
                 <td data-sort="@context.RagSet.HighValue">
 
-                <td style="width:30px;color:darkgreen;align-content:center"><MatIcon Icon="phone"></MatIcon></td>
+                <td style="width:30px;color:darkgreen;align-content:center"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
                 </td> }
                 else
                 {
                 <td data-sort="@context.RagSet.MidValue">
 
-                <td style="width:30px;color:orange"><MatIcon Icon="phone"></MatIcon></td>
+                <td style="width:30px;color:orange"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
 
                 </td>}
             }
-                                    <td style="width:70px">@context.WescotRef</td>
-                                    <td style="width:500px">@context.CustomerName</td>
+                                    <td style="width:75px">@context.WescotRef</td>
+                                    <td style="width:600px">@context.CustomerName</td>
                                     <td style="width:50px">@context.DueDate.ToShortDateString()</td>
-                                    <td style="width:600px">@context.Summary</td>
+                                    <td style="width:625px">@context.Summary</td>
                                 </MatTableRow>
                             </MatTable>
                         </div>
@@ -76,19 +76,20 @@
     
 </div>
 
+<MatDialog Style="width:500px" @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>CSU Callback</MatDialogTitle>
+    <MatDivider></MatDivider>
+    <MatDialogContent>
+        <CSUCallbackForm CSUCallbackModel="@CSUmodel" ReadOnly="true"></CSUCallbackForm>
+    </MatDialogContent>
+    <MatDivider></MatDivider>
+    <MatDialogActions>
+    </MatDialogActions>
 
-                <MatDialog @bind-IsOpen="@dialogIsOpen">
-                    <MatDialogTitle>CSU Callback</MatDialogTitle>
-                    <MatDialogContent>
-                        <CSUCallbackForm CSUCallbackModel="@CSUmodel" ReadOnly="true"></CSUCallbackForm>
-
-                    </MatDialogContent>
-                    <MatDivider></MatDivider>
-                    <MatDialogActions>
-                    </MatDialogActions>
-
-                </MatDialog>}
-@code { [Parameter]
+</MatDialog>
+}
+@code {
+    [Parameter]
     public string QueueGroupID { get; set; }
 
     [Parameter]
@@ -123,7 +124,7 @@
     }
     public async void SelectionChangedEvent(object row)
     {
-        if (row == null)
+        if (row != null)
         {
             var x = (QueueItem)row;
             CSUmodel = await CSUCallbackItemService.Get(x.QueueItemID.Value);

@@ -3,21 +3,20 @@
     <DataAnnotationsValidator />
     <div class="mat-layout-grid">
         <div class="mat-layout-grid-inner">
-
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" Label="Wescot Ref" @bind-Value="CSUCallbackModel.WescotRef" Type="Number" ReadOnly="true" />
+                <MatTextField FullWidth="true" Label="Wescot Ref" @bind-Value="CSUCallbackModel.WescotRef" Type="Number" ReadOnly="true" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" Label="Contact Number" @bind-Value="CSUCallbackModel.ContactNumber" Type="Number" ReadOnly="true" />
+                <MatTextField FullWidth="true" Label="Contact Number" @bind-Value="CSUCallbackModel.ContactNumber" Type="Number" ReadOnly="true" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatDatePicker Class="d-block" @bind-Value="CSUCallbackModel.DateForCallback" ReadOnly="true"></MatDatePicker>
+                <MatDatePicker FullWidth="true" @bind-Value="CSUCallbackModel.DateForCallback" ReadOnly="true"></MatDatePicker>
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" Label="Contact Number" @bind-Value="CSUCallbackModel.TimeToAvoid" ReadOnly="true" />
+                <MatTextField FullWidth="true" Label="Contact Number" @bind-Value="CSUCallbackModel.TimeToAvoid" ReadOnly="true" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatSelect Class="d-block" Label="Select" @bind-Value="CSUCallbackModel.Relationship" ReadOnly="true">
+                <MatSelect FullWidth="true" Label="Select" @bind-Value="CSUCallbackModel.Relationship" ReadOnly="true">
                     <MatOptionString Value=""></MatOptionString>
                     <MatOptionString Value="Customer">Customer</MatOptionString>
                     <MatOptionString Value="Authorised Third Party">Authorised Third Party</MatOptionString>
@@ -26,27 +25,24 @@
                 <ValidationMessage For="@(() => CSUCallbackModel.Relationship)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" Label="Name Of caller" @bind-Value="CSUCallbackModel.NameOfcaller" ReadOnly="true" />
+                <MatTextField FullWidth="true" Label="Name Of caller" @bind-Value="CSUCallbackModel.NameOfcaller" ReadOnly="true" />
                 <ValidationMessage For="@(() => CSUCallbackModel.NameOfcaller)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" Label="Reason For Transfer" @bind-Value="CSUCallbackModel.ReasonForTransfer" ReadOnly="true" />
+                <MatTextField FullWidth="true" Label="Reason For Transfer" @bind-Value="CSUCallbackModel.ReasonForTransfer" ReadOnly="true" />
                 <ValidationMessage For="@(() => CSUCallbackModel.ReasonForTransfer)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" @bind-Value="CSUCallbackModel.ReasonForCallback" Label="Reason For Callback" TextArea="true" FullWidth="true" ReadOnly="true"></MatTextField>
+                <MatTextField FullWidth="true" @bind-Value="CSUCallbackModel.ReasonForCallback" Label="Reason For Callback"  ReadOnly="true"></MatTextField>
                 <ValidationMessage For="@(() => CSUCallbackModel.ReasonForCallback)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
                 <MatSlideToggle @bind-Value="@HealthIssueBool"></MatSlideToggle>
-                @if (HealthIssueBool == true)
-                {
-                    <MatTextField Class="d-block" @bind-Value="CSUCallbackModel.HealthIssue" Label="Health Issue" TextArea="true" FullWidth="true" ReadOnly="true"></MatTextField>
-                    <ValidationMessage For="@(() => CSUCallbackModel.HealthIssue)" />
-                }
+                <MatTextField FullWidth="true" @bind-Value="CSUCallbackModel.HealthIssue" Label="Health Issue" TextArea="true" ReadOnly="true"></MatTextField>
+                <ValidationMessage For="@(() => CSUCallbackModel.HealthIssue)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField Class="d-block" Label="Queue ItemId" @bind-Value="CSUCallbackModel.QueueItemID" ReadOnly="true" />
+                <MatTextField FullWidth="true" Label="Queue ItemId" @bind-Value="CSUCallbackModel.QueueItemID" ReadOnly="true" />
                 <ValidationMessage For="@(() => CSUCallbackModel.QueueItemID)" />
             </div>
         </div>
