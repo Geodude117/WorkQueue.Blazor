@@ -6,56 +6,55 @@
 {
     if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.SwitchQuestionRenderer.ToString())
     {
-        <WorkQueue.Blazor.Renderers.SwitchQuestionRenderer Question="(TextQuestion)domainInfoViewModel.TextQuestion">
+        <WorkQueue.Blazor.Renderers.SwitchQuestionRenderer Question="(TextQuestion)domainInfoViewModel.Question">
         </WorkQueue.Blazor.Renderers.SwitchQuestionRenderer>
     }
     else if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.TextAreaQuestionRenderer.ToString())
     {
-        <WorkQueue.Blazor.Renderers.TextAreaQuestionRenderer Question="(TextQuestion)domainInfoViewModel.TextQuestion"> </WorkQueue.Blazor.Renderers.TextAreaQuestionRenderer>
+        <WorkQueue.Blazor.Renderers.TextAreaQuestionRenderer Question="(TextQuestion)domainInfoViewModel.Question"> </WorkQueue.Blazor.Renderers.TextAreaQuestionRenderer>
     }
     else
     {
-        <WorkQueue.Blazor.Renderers.TextQuestionRenderer Question="(TextQuestion)domainInfoViewModel.TextQuestion">
+        <WorkQueue.Blazor.Renderers.TextQuestionRenderer Question="(TextQuestion)domainInfoViewModel.Question">
         </WorkQueue.Blazor.Renderers.TextQuestionRenderer>
     }
 }
 
 @if (domainInfoViewModel.DomainType.TypeName == CustomType.BoolType.ToString())
-{
-    if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.BoolQuestionRednerer.ToString())
     {
-        <WorkQueue.Blazor.Renderers.BoolQuestionRenderer Question="(BoolQuestion)domainInfoViewModel.BoolQuestion"></WorkQueue.Blazor.Renderers.BoolQuestionRenderer>
+        if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.BoolQuestionRednerer.ToString())
+        {
+            <WorkQueue.Blazor.Renderers.BoolQuestionRenderer Question="(BoolQuestion)domainInfoViewModel.Question"></WorkQueue.Blazor.Renderers.BoolQuestionRenderer>
+        }
     }
-}
 
-@if (domainInfoViewModel.DomainType.TypeName == CustomType.DateTimeType.ToString())
-{
-    if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.DateTimeQuestionRenderer.ToString())
+    @if (domainInfoViewModel.DomainType.TypeName == CustomType.DateTimeType.ToString())
     {
-        <WorkQueue.Blazor.Renderers.DateTimeQuestionRenderer Question="(DateTimeQuestion)domainInfoViewModel.DateTimeQuestion"></WorkQueue.Blazor.Renderers.DateTimeQuestionRenderer>
+        if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.DateTimeQuestionRenderer.ToString())
+        {
+            <WorkQueue.Blazor.Renderers.DateTimeQuestionRenderer Question="(DateTimeQuestion)domainInfoViewModel.Question"></WorkQueue.Blazor.Renderers.DateTimeQuestionRenderer>
+        }
     }
-}
 
-@if (domainInfoViewModel.DomainType.TypeName == CustomType.IntType.ToString())
-{
-    if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.NumberQuestionRenderer.ToString())
+    @if (domainInfoViewModel.DomainType.TypeName == CustomType.IntType.ToString())
     {
-        <WorkQueue.Blazor.Renderers.IntQuestionRenderer Question="(IntQuestion)domainInfoViewModel.IntQuestion"></WorkQueue.Blazor.Renderers.IntQuestionRenderer>
+        if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.NumberQuestionRenderer.ToString())
+        {
+            <WorkQueue.Blazor.Renderers.IntQuestionRenderer Question="(IntQuestion)domainInfoViewModel.Question"></WorkQueue.Blazor.Renderers.IntQuestionRenderer>
+        }
     }
-}
 
-@if (domainInfoViewModel.DomainType.TypeName == CustomType.DropdownType.ToString())
-{
-    if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.DropDownQuestionRenderer.ToString())
+    @if (domainInfoViewModel.DomainType.TypeName == CustomType.DropdownType.ToString())
     {
-        <WorkQueue.Blazor.Renderers.DropdownQuestionRenderer Question="(DropdownQuestion)domainInfoViewModel.DropdownQuestion "></WorkQueue.Blazor.Renderers.DropdownQuestionRenderer>
+        if (domainInfoViewModel.DomainType.ClassObject == RendererTypes.DropDownQuestionRenderer.ToString())
+        {
+            <WorkQueue.Blazor.Renderers.DropdownQuestionRenderer Question="(DropdownQuestion)domainInfoViewModel.Question"></WorkQueue.Blazor.Renderers.DropdownQuestionRenderer>
+        }
     }
-}
-
 
 @code  {
 
     [Parameter]
-    public DomainInfoViewModel domainInfoViewModel { get; set; }
+    public IDomainInfoViewModels domainInfoViewModel { get; set; }
 
 }

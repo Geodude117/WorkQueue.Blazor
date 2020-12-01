@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DomainData.Models.QuestionModels
 {
-    public class DropdownQuestion
+    public class DropdownQuestion : IQuestion
     {
         public DropdownQuestion()
         {

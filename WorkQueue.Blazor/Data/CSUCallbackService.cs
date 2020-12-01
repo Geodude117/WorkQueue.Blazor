@@ -1,4 +1,5 @@
 ﻿using CallBack_Model.Model;
+using DomainData.Models.QuestionModels;
 using DomainData.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,7 +22,7 @@ namespace WorkQueue.Blazor.Data
             _httpClientConnection2 = httpClientConnection2;
         }
 
-        public async Task<bool> PostCSU(DomainViewModel model, string userName)
+        public async Task<bool> PostCSU(IDomainViewModel model, string userName)
         {
             var mappedObject = ApplyMap(model, userName);
 
@@ -36,7 +37,7 @@ namespace WorkQueue.Blazor.Data
             return result;
         }
 
-        public QItemHolder ApplyMap (DomainViewModel model, string userName)
+        public QItemHolder ApplyMap (IDomainViewModel model, string userName)
         {
             QItemHolder qItemHolder = new QItemHolder();
           
@@ -61,10 +62,9 @@ namespace WorkQueue.Blazor.Data
         }
 
 
-        public QueueItem MapQueueItem (List<DomainInfoViewModel> list, QueueItem queueItem)
+        public QueueItem MapQueueItem (List<IDomainInfoViewModels> list, QueueItem queueItem)
         {
             PropertyInfo[] queueItemproperties = typeof(QueueItem).GetProperties();
-
             foreach (var domainItem in list)
             {
                 foreach (PropertyInfo property in queueItemproperties)
@@ -77,16 +77,20 @@ namespace WorkQueue.Blazor.Data
                             switch (domainItem.DomainType.TypeName)
                             {
                                 case "StringType":
-                                    property.SetValue(queueItem, domainItem.TextQuestion.Value);
+                                    TextQuestion txtQuestion = (TextQuestion)domainItem.Question;
+                                    property.SetValue(queueItem, txtQuestion.Value);
                                     break;
                                 case "BoolType":
-                                    property.SetValue(queueItem, domainItem.BoolQuestion.Value);
+                                    BoolQuestion boolQuestion = (BoolQuestion)domainItem.Question;
+                                    property.SetValue(queueItem, boolQuestion.Value);
                                     break;
                                 case "IntType":
-                                    property.SetValue(queueItem, domainItem.IntQuestion.Value);
+                                    IntQuestion intQuestion = (IntQuestion)domainItem.Question;
+                                    property.SetValue(queueItem, intQuestion.Value);
                                     break;
                                 case "DateTimeType":
-                                    property.SetValue(queueItem, domainItem.DateTimeQuestion.Value);
+                                    DateTimeQuestion dateTimeQuestion = (DateTimeQuestion)domainItem.Question;
+                                    property.SetValue(queueItem, dateTimeQuestion.Value);
                                     break;
                             }
                         }
@@ -96,7 +100,7 @@ namespace WorkQueue.Blazor.Data
 
             return queueItem;
         }
-        public CSU_Callback MapCSUCallbackItem(List<DomainInfoViewModel> list, CSU_Callback csuCallbackItem)
+        public CSU_Callback MapCSUCallbackItem(List<IDomainInfoViewModels> list, CSU_Callback csuCallbackItem)
         {
             PropertyInfo[] csuCallbackproperties = typeof(CSU_Callback).GetProperties();
 
@@ -112,16 +116,20 @@ namespace WorkQueue.Blazor.Data
                             switch (domainItem.DomainType.TypeName)
                             {
                                 case "StringType":
-                                    property.SetValue(csuCallbackItem, domainItem.TextQuestion.Value);
+                                    TextQuestion txtQuestion = (TextQuestion)domainItem.Question;
+                                    property.SetValue(csuCallbackItem, txtQuestion.Value);
                                     break;
                                 case "BoolType":
-                                    property.SetValue(csuCallbackItem, domainItem.BoolQuestion.Value);
+                                    BoolQuestion boolQuestion = (BoolQuestion)domainItem.Question;
+                                    property.SetValue(csuCallbackItem, boolQuestion.Value);
                                     break;
                                 case "IntType":
-                                    property.SetValue(csuCallbackItem, domainItem.IntQuestion.Value);
+                                    IntQuestion intQuestion = (IntQuestion)domainItem.Question;
+                                    property.SetValue(csuCallbackItem, intQuestion.Value);
                                     break;
                                 case "DateTimeType":
-                                    property.SetValue(csuCallbackItem, domainItem.DateTimeQuestion.Value);
+                                    DateTimeQuestion dateTimeQuestion = (DateTimeQuestion)domainItem.Question;
+                                    property.SetValue(csuCallbackItem, dateTimeQuestion.Value);
                                     break;
                             }
                         }

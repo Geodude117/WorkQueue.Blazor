@@ -9,6 +9,5 @@ namespace DomainData.Models.QuestionModels
         string Text { get; set; }
         int Order { get; set; }
         bool HasValidation { get; set; }
-
     }
 }

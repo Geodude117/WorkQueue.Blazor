@@ -119,7 +119,7 @@
     [Parameter]
     public int GroupId { get; set; }
 
-    private DomainViewModel model { get; set; }
+    private IDomainViewModel model { get; set; }
 
     protected async override void OnInitialized()
     {

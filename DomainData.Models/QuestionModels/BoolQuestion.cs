@@ -18,7 +18,6 @@ namespace DomainData.Models.QuestionModels
         public bool? Value { get; set; }
         public int QuestionId { get; set; }
 
-
         public static ValidationResult CustomRequired(bool? value, ValidationContext vc)
         {
             // get has validtion property

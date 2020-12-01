@@ -37,7 +37,7 @@ namespace DomainData.BusinessLogic.QuestionViewModel
 
             var SelectedDomainInformation = await _informationRepo.GetAllByGroupIdAsync(selectedDomainGroup.Id);
 
-            List<DomainInfoViewModel> domainInfoViewModel = new List<DomainInfoViewModel>();
+            List<IDomainInfoViewModels> domainInfoViewModel = new List<IDomainInfoViewModels>();
             
 
             foreach (var domainInformation in SelectedDomainInformation)
@@ -51,56 +51,56 @@ namespace DomainData.BusinessLogic.QuestionViewModel
                 if (infoModel.DomainType.TypeName == CustomType.StringType.ToString())
                 {
 
-                    TextQuestion textQuestion = new TextQuestion
+                    IQuestion textQuestion = new TextQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
                         Order = infoModel.DomainInformation.Order,
                         HasValidation = infoModel.DomainInformation.HasValidation
 
                     };
-                    infoModel.TextQuestion = textQuestion;
+                    infoModel.Question = textQuestion;
                 }
                 else if (infoModel.DomainType.TypeName == CustomType.BoolType.ToString())
                 {
-                    BoolQuestion boolQuestion = new BoolQuestion
+                    IQuestion boolQuestion = new BoolQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
                         Order = infoModel.DomainInformation.Order,
                         HasValidation = infoModel.DomainInformation.HasValidation
                     };
-                    infoModel.BoolQuestion = boolQuestion;
+                    infoModel.Question = boolQuestion;
                 }
                 else if (infoModel.DomainType.TypeName == CustomType.IntType.ToString())
                 {
-                    IntQuestion intQuestion = new IntQuestion
+                    IQuestion intQuestion = new IntQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
                         Order = infoModel.DomainInformation.Order,
                         HasValidation = infoModel.DomainInformation.HasValidation
                     };
-                    infoModel.IntQuestion = intQuestion;
+                    infoModel.Question = intQuestion;
                 }
                 else if (infoModel.DomainType.TypeName == CustomType.DateTimeType.ToString())
                 {
-                    DateTimeQuestion dateTimeQuestion = new DateTimeQuestion
+                    IQuestion dateTimeQuestion = new DateTimeQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
                         Order = infoModel.DomainInformation.Order,
                         HasValidation = infoModel.DomainInformation.HasValidation
 
                     };
-                    infoModel.DateTimeQuestion = dateTimeQuestion;
+                    infoModel.Question = dateTimeQuestion;
                 }
                 else if (infoModel.DomainType.TypeName == CustomType.DropdownType.ToString())
                 {
-                    DropdownQuestion dropdownQuestion = new DropdownQuestion
+                    IQuestion dropdownQuestion = new DropdownQuestion
                     {
                         Text = infoModel.DomainInformation.Title,
                         Order = infoModel.DomainInformation.Order,
                         HasValidation = infoModel.DomainInformation.HasValidation,
                         Values = infoModel.DomainInformation.Arguments.Split(',').ToList()
                     };
-                    infoModel.DropdownQuestion = dropdownQuestion;
+                    infoModel.Question = dropdownQuestion;
                 }
 
                 domainInfoViewModel.Add(infoModel);
