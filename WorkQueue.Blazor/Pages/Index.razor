@@ -8,22 +8,22 @@
     <div class="p-2"></div>
     <div class="mat-elevation-z5" style="padding: 20px">
         <MatH6>Select Work Queue</MatH6>
-        <br />
+        <div class="p-1"></div>
         <MatSelectValue Label="Select Queue" @bind-Value="@selectedGroupID" Items="@groupData" ValueSelector="@(i=>i.Id.ToString())">
             <ItemTemplate>
                 <span>@context.Name</span>
             </ItemTemplate>
         </MatSelectValue>
-        <div class="p-1"></div>
         <MatButton Style="color:#1976d2" OnClick="@ViewQueue">View Queues</MatButton>
     </div>
     <div class="p-2"></div>
-    @if (domainGroups != null)
-    {
-        <div class="mat-elevation-z5" style="padding: 20px">
-            <MatH6>List of Domain Groups</MatH6>
-            <div class="mat-layout-grid">
-                <div class="mat-layout-grid-inner">
+    <div class="mat-elevation-z5" style="padding: 20px; min-height: 450px">
+        <MatH6>List of Domain Groups</MatH6>
+        <div class="p-1"></div>
+        <div class="mat-layout-grid">
+            <div class="mat-layout-grid-inner">
+                @if (domainGroups != null)
+                {
                     @foreach (var domainGroup in domainGroups)
                     {
                         <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
@@ -34,7 +34,7 @@
                                     </MatHeadline6>
                                 </div>
                                 <MatCardContent>
-                                    <MatCardMedia  Style="background-color:#1976d2"Wide="true" >
+                                    <MatCardMedia Style="background-color:#1976d2" Wide="true">
                                         <div style="position:center">
                                             @*<MatIcon Style="font-size:180px; padding-left:80px" Icon="call"></MatIcon>*@
                                         </div>
@@ -52,34 +52,45 @@
                             </MatCard>
                         </div>
                     }
-                </div>
-            </div>
-        </div>
-    }
-    <div class="p-2"></div>
-    <div class="mat-elevation-z5" style="padding: 20px">
-        <MatH6>Quick View</MatH6>
-        <br />
-        @if (queueGroups != null)
-        {
-            <MatAccordion Multi="true">
-                @foreach (var group in queueGroups)
-                {
+                }
+                else
+                { 
                     <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                        <MatExpansionPanel>
-                            <MatExpansionPanelSummary>
-                                <MatExpansionPanelHeader>
-                                    @group.Name
-                                </MatExpansionPanelHeader>
-                            </MatExpansionPanelSummary>
-                            <MatExpansionPanelDetails>
-                                <WorkQueue.Blazor.Components.QueueComponent QueueGroupID="@group.QueueGroupID.ToString()" QueueGroupName="@group.Name"></WorkQueue.Blazor.Components.QueueComponent>
-                            </MatExpansionPanelDetails>
-                        </MatExpansionPanel>
-
+                        <MatProgressBar Indeterminate="true"></MatProgressBar>
                     </div>
                 }
-            </MatAccordion>
+            </div>
+                </div>
+    </div>
+    <div class="p-2"></div>
+    <div class="mat-elevation-z5" style="padding: 20px;min-height: 450px">
+        <MatH6>Quick View</MatH6>
+        <div class="p-1"></div>
+        @if (queueGroups != null)
+        {
+        <MatAccordion Multi="true">
+            @foreach (var group in queueGroups)
+                {
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                <MatExpansionPanel>
+                    <MatExpansionPanelSummary>
+                        <MatExpansionPanelHeader>
+                            @group.Name
+                        </MatExpansionPanelHeader>
+                    </MatExpansionPanelSummary>
+                    <MatExpansionPanelDetails>
+                        <WorkQueue.Blazor.Components.QueueComponent QueueGroupID="@group.QueueGroupID.ToString()" QueueGroupName="@group.Name"></WorkQueue.Blazor.Components.QueueComponent>
+                    </MatExpansionPanelDetails>
+                </MatExpansionPanel>
+
+            </div>
+                }
+        </MatAccordion>
+        }
+        else
+        {
+        <h3 class="mat-subtitle1">Large</h3>
+        <MatProgressBar Indeterminate="true"></MatProgressBar>
         }
     </div>
 </div>
