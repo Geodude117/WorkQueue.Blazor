@@ -12,11 +12,14 @@
         <MatAppBarSection>
             <MatIconButton Icon="menu" OnClick="@((e) => MenuButtonClicked())"></MatIconButton>
             <MatHidden BreakPoint="@MatBreakpoint.XS" Direction="@MatHiddenDirection.Down">
-                <MatAppBarTitle>Work Queue</MatAppBarTitle>
+                <MatAppBarTitle>
+                    Work Queue
+                </MatAppBarTitle>
             </MatHidden>
-            <MatHidden BreakPoint="@MatBreakpoint.SM" Direction="@MatHiddenDirection.Up">
-                <MatAppBarTitle>Big Top</MatAppBarTitle>
-            </MatHidden>
+
+        </MatAppBarSection>
+        <MatAppBarSection Align="@MatAppBarSectionAlign.End">
+            <img alt="Wescot" style=" height: 50px;padding-bottom:5px; border-style: none;" src="/css/images/logo_small.png">
         </MatAppBarSection>
     </MatAppBarRow>
 </MatAppBar>
