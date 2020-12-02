@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/list"
 @using RestSharp
 @using DomainData.Models
 @using DomainData.Models.UIModels
@@ -9,8 +9,6 @@
     <div class="p-2"></div>
     <WorkQueue.Blazor.Components.QueueSelectListComponent selectedGroupID="@selectedGroupID" groupData="groupData"></WorkQueue.Blazor.Components.QueueSelectListComponent>
     <div class="p-2"></div>
-    <WorkQueue.Blazor.Components.DomainCreateListComponent domainGroups="domainGroups"></WorkQueue.Blazor.Components.DomainCreateListComponent>
-    <div class="p-2"></div>
     <WorkQueue.Blazor.Components.QueueQuickViewComponent queueGroups="queueGroups"></WorkQueue.Blazor.Components.QueueQuickViewComponent>
 </div>
 
@@ -19,7 +17,6 @@
 {
 
     private IEnumerable<QueueGroup> queueGroups;
-    private IEnumerable<DomainGroup> domainGroups;
 
     public string selectedGroupID;
 
@@ -37,13 +34,6 @@
 
             groupData.Add(data);
         }
-
-        var client = new RestClient("http://localhost:52388/");
-        var request = new RestRequest("api/DomainData/", Method.GET);
-        var queryResult = client.Execute<List<DomainGroup>>(request).Data;
-
-        domainGroups = (IEnumerable<DomainGroup>)queryResult;
-
         this.StateHasChanged();
 
     }

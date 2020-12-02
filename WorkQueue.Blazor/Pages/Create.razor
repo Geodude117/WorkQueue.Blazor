@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/create"
 @using RestSharp
 @using DomainData.Models
 @using DomainData.Models.UIModels
@@ -7,37 +7,16 @@
 @inject NavigationManager NavigationManager
 <div class="container-fluid">
     <div class="p-2"></div>
-    <WorkQueue.Blazor.Components.QueueSelectListComponent selectedGroupID="@selectedGroupID" groupData="groupData"></WorkQueue.Blazor.Components.QueueSelectListComponent>
-    <div class="p-2"></div>
     <WorkQueue.Blazor.Components.DomainCreateListComponent domainGroups="domainGroups"></WorkQueue.Blazor.Components.DomainCreateListComponent>
-    <div class="p-2"></div>
-    <WorkQueue.Blazor.Components.QueueQuickViewComponent queueGroups="queueGroups"></WorkQueue.Blazor.Components.QueueQuickViewComponent>
 </div>
-
 
 @code
 {
 
-    private IEnumerable<QueueGroup> queueGroups;
     private IEnumerable<DomainGroup> domainGroups;
-
-    public string selectedGroupID;
-
-    List<GroupData> groupData = new List<GroupData>();
 
     protected async override void OnInitialized()
     {
-        queueGroups = await QueueGroupService.GetAll();
-
-        foreach (var item in queueGroups)
-        {
-            GroupData data = new GroupData();
-            data.Id = item.QueueGroupID;
-            data.Name = item.Name;
-
-            groupData.Add(data);
-        }
-
         var client = new RestClient("http://localhost:52388/");
         var request = new RestRequest("api/DomainData/", Method.GET);
         var queryResult = client.Execute<List<DomainGroup>>(request).Data;

@@ -1,0 +1,39 @@
+﻿@page "/QueueQuickVIew/{queueGroups}"
+<div class="mat-elevation-z5" style="padding: 20px;min-height: 450px">
+    <MatH6>Quick View</MatH6>
+    <div class="p-1"></div>
+    @if (queueGroups != null)
+    {
+        <MatAccordion Multi="true">
+            @foreach (var group in queueGroups)
+            {
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                    <MatExpansionPanel>
+                        <MatExpansionPanelSummary>
+                            <MatExpansionPanelHeader>
+                                @group.Name
+                            </MatExpansionPanelHeader>
+                        </MatExpansionPanelSummary>
+                        <MatExpansionPanelDetails>
+                            <WorkQueue.Blazor.Components.QueueComponent QueueGroupID="@group.QueueGroupID.ToString()" QueueGroupName="@group.Name"></WorkQueue.Blazor.Components.QueueComponent>
+                        </MatExpansionPanelDetails>
+                    </MatExpansionPanel>
+
+                </div>
+            }
+        </MatAccordion>
+    }
+    else
+    {
+        <h3 class="mat-subtitle1">Large</h3>
+        <MatProgressBar Indeterminate="true"></MatProgressBar>
+    }
+</div>
+
+
+@code {
+
+    [Parameter]
+    public IEnumerable<QueueGroup> queueGroups { get; set; }
+
+}

@@ -1,0 +1,32 @@
+﻿@page "/QueueSelectList/{domainGroups}"
+@using DomainData.Models.UIModels
+@inject NavigationManager NavigationManager
+
+<div class="mat-elevation-z5" style="padding: 20px">
+    <MatH6>Select Work Queue</MatH6>
+    <div class="p-1"></div>
+    <MatSelectValue Label="Select Queue" @bind-Value="@selectedGroupID" Items="@groupData" ValueSelector="@(i=>i.Id.ToString())">
+        <ItemTemplate>
+            <span>@context.Name</span>
+        </ItemTemplate>
+    </MatSelectValue>
+    <MatButton Style="color:#1976d2" OnClick="@ViewQueue">View Queues</MatButton>
+
+</div>
+
+@code {
+    [Parameter]
+    public string selectedGroupID { get; set; }
+
+    [Parameter]
+    public List<GroupData> groupData { get; set; }
+
+    private void ViewQueue()
+    {
+        int parsedSelectedGroupId = int.Parse(selectedGroupID);
+
+        string selectedGroupName = groupData.Single(s => s.Id == parsedSelectedGroupId).Name;
+
+        NavigationManager.NavigateTo("QueueComponent/" + selectedGroupID + "/" + selectedGroupName);
+    }
+}
