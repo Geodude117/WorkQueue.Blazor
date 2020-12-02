@@ -29,7 +29,10 @@
             {
                 @foreach (var group in domainGroup)
                 {
-                    <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="dynamic_form"></MatIcon>&nbsp;@group.GroupName</MatNavItem>
+                    @if (group.IsActive)
+                    {
+                        <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="dynamic_form"></MatIcon>&nbsp;@group.GroupName</MatNavItem>
+                    }
                 }
             }
         </MatNavSubMenuList>

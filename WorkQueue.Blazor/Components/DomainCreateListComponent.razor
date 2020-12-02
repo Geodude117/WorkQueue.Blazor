@@ -10,29 +10,33 @@
             {
                 @foreach (var domainGroup in domainGroups)
                 {
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
-                        <MatCard class="demo-mat-card" Style="width:300px">
-                            <div class="demo-mat-card-content">
-                                <MatHeadline6 class="demo-mat-card-clean-margin">
-                                    <div class="p-1">Create @domainGroup.GroupName</div>
-                                </MatHeadline6>
-                            </div>
-                            <MatCardContent>
-                                <MatCardMedia Style="" Wide="true">
-                                    <MatIcon Style="font-size:170px; padding-left:60px;" Icon="create"></MatIcon>
-                                </MatCardMedia>
-                            </MatCardContent>
-                            <MatCardActions>
-                                <MatCardActionButtons>
-                                    <MatButton Style="color:#1976d2">Create</MatButton>
-                                    <MatButton Style="color:#1976d2">View Queues</MatButton>
-                                </MatCardActionButtons>
-                                <MatCardActionIcons>
-                                    <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
-                                </MatCardActionIcons>
-                            </MatCardActions>
-                        </MatCard>
-                    </div>
+                    if (domainGroup.IsActive)
+                    {
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                            <MatCard class="demo-mat-card" Style="width:300px">
+                                <div class="demo-mat-card-content">
+                                    <MatHeadline6 class="demo-mat-card-clean-margin">
+                                        <div class="p-1">Create @domainGroup.GroupName</div>
+                                    </MatHeadline6>
+                                </div>
+                                <MatCardContent>
+                                    <MatCardMedia Style="" Wide="true">
+                                        <MatIcon Style="font-size:170px; padding-left:60px;" Icon="create"></MatIcon>
+                                    </MatCardMedia>
+                                </MatCardContent>
+                                <MatCardActions>
+                                    <MatCardActionButtons>
+                                        <MatButton Style="color:#1976d2">Create</MatButton>
+                                        <MatButton Style="color:#1976d2">View Queues</MatButton>
+                                    </MatCardActionButtons>
+                                    <MatCardActionIcons>
+                                        <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+                                    </MatCardActionIcons>
+                                </MatCardActions>
+                            </MatCard>
+                        </div>
+                    }
+
                 }
             }
             else
@@ -47,8 +51,5 @@
 @code {
     [Parameter]
     public IEnumerable<DomainGroup> domainGroups { get; set; }
-
-
-
 
 }

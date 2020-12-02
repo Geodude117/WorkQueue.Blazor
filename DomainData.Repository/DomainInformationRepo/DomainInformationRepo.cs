@@ -56,7 +56,7 @@ namespace DomainData.Repository.DomainInformationRepo
                     var result = (await transactionopen.Connection.ExecuteAsync("[dbo].[DomainInformation_Insert]", new
                     {
                         entity.Title,
-                        entity.ObjectMapping,
+                        entity.PropertyMapping,
                         entity.Order,
                         entity.TypeId,
                         entity.GroupId

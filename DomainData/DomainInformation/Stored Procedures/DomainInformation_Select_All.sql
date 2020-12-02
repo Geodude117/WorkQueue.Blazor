@@ -3,7 +3,7 @@
 	SELECT 
 		[di].[Id],
 		[di].[Title],
-		[di].[ObjectMapping],
+		[di].[PropertyMapping],
 		[di].[Order],
 		[di].[GroupId],
 		[di].[Arguments],

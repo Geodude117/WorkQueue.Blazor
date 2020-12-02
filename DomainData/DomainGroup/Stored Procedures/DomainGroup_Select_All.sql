@@ -3,6 +3,7 @@ AS
 	SELECT 
 		[dg].Id,
 		[dg].GroupName,
+		[dg].ClassMapping,
 		[dg].ExternalReferenceId,
 		[dg].IsActive
 	FROM
