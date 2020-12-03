@@ -1,0 +1,63 @@
+﻿@page "/CSUCallbackAction/{QueueId}"
+@inject QueueResultService QueueResultService
+
+<br />
+<MatHeadline5>1st Callback</MatHeadline5>
+<MatHeadline3>Call 01234567891</MatHeadline3>
+<br />
+@if (QResults != null)
+{
+    <MatList SingleSelection="true">
+        @foreach (var item in QResults)
+        {
+            <MatListItem>
+                <MatListItemText @onclick="@OpenDialog">@item.QueueResult</MatListItemText>
+            </MatListItem>
+        }
+    </MatList>
+}
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Confirmation</MatDialogTitle>
+    <MatDialogContent>
+        Are you sure?
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
+        <MatButton Class="btn-primary" OnClick="@OkClick">Yes</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code {
+
+    [Parameter]
+    public string QueueId { get; set; }
+
+    private QResult[] QResults;
+
+    private bool dialogIsOpen = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        QResults = await QueueResultService.GetAll(QueueId);
+        this.StateHasChanged();
+    }
+
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    QResults = await QueueResultService.GetAll("1");
+    //}
+
+    private void OpenDialog()
+    {
+        dialogIsOpen = true;
+
+    }
+
+    private void OkClick()
+    {
+        dialogIsOpen = false;
+
+    }
+}

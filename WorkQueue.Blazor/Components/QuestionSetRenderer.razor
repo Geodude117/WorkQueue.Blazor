@@ -2,127 +2,111 @@
 @page "/QuestionSet/{GroupId:int}"
 @using RestSharp
 @using DomainData.Models.ViewModels
-@using Newtonsoft.Json
+@using Microsoft.AspNetCore.Components.Authorization
 
 @inject QuestionService _questionService
 @inject CSUCallbackService _csuService;
-
-
-@using System.Security.Claims
-@using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthenticationStateProvider
-
 
 @if (model != null)
 {
-<EditForm Model="@model" OnSubmit="OnSubmit">
-
-    <div class="mat-elevation-z5" style="padding: 30px">
-        <div style="display: flex; flex-direction: column; padding: 10px;" class="mat-elevation-z5 mdc-theme--surface">
-        <div class="p-3">
-            <div class="mat-layout-grid">
-                <div class="mat-layout-grid-inner">
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                        <h2>@model.DomainGroup.GroupName</h2>
-                    </div>
-
-                    @if (model != null)
-                    {
-                        foreach (var domainInfo in model.DomainInfoViewModels)
-                        {
+    <EditForm Model="@model" OnSubmit="OnSubmit">
+        <div class="mat-elevation-z5" style="padding: 30px">
+            <div style="display: flex; flex-direction: column; padding: 10px;" class="mat-elevation-z5 mdc-theme--surface">
+                <div class="p-3">
+                    <div class="mat-layout-grid">
+                        <div class="mat-layout-grid-inner">
                             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                                <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"></WorkQueue.Blazor.Components.ControlRenderer>
+                                <h2>@model.DomainGroup.GroupName</h2>
                             </div>
-                        }
-                    }
-
-                    <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                        <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
+                            @if (model != null)
+                            {
+                                foreach (var domainInfo in model.DomainInfoViewModels)
+                                {
+                                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                        <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"></WorkQueue.Blazor.Components.ControlRenderer>
+                                    </div>
+                                }
+                            }
+                            <div style="padding-top:30px" class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                <MatButton Type="submit" OnClick="@(e => { _showConfirm = true; })" Outlined="true">Complete</MatButton>
+                            </div>
+                        </div>
                     </div>
+                    <br />
                 </div>
             </div>
-            <br />
         </div>
 
-    </div>
+        <MatDialog @bind-IsOpen="@_showConfirm">
+            @if (_validForm)
+            {
+                <MatDialogTitle>Complete Confirmation</MatDialogTitle>
+                <MatDivider></MatDivider>
+                <MatDialogContent>
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <br />
+                    <p>Are you sure you want to complete?</p>
+                    <br />
+                </MatDialogContent>
+                <MatDivider></MatDivider>
+                <MatDialogActions>
+                    <MatButton Type="button" OnClick="@OnValidSubmit">Yes</MatButton>
+                    <MatButton Type="button" OnClick="@(e => { _showConfirm = false; })">No</MatButton>
+                </MatDialogActions>
+            }
+            else
+            {
+                <MatDialogTitle>Please check error</MatDialogTitle>
+                <MatDivider></MatDivider>
+                <MatDialogContent>
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                </MatDialogContent>
+                <MatDivider></MatDivider>
+                <MatDialogActions>
+                    <MatButton Type="button" OnClick="@(e => { _showConfirm = false; })">Back</MatButton>
+                </MatDialogActions>
+            }
+        </MatDialog>
 
-
-    </div>
-
-
-    
-
-    <MatDialog @bind-IsOpen="@_showConfirm">
-        @if (_validForm)
-        {
-            <MatDialogTitle>Complete Confirmation</MatDialogTitle>
+        <MatDialog @bind-IsOpen="@_ShowCreatedPost">
+            <MatDialogTitle>Success</MatDialogTitle>
             <MatDivider></MatDivider>
             <MatDialogContent>
-                <DataAnnotationsValidator />
-                <ValidationSummary />
                 <br />
-                <p>Are you sure you want to complete?</p>
+                <p>Successfully created!</p>
                 <br />
             </MatDialogContent>
             <MatDivider></MatDivider>
             <MatDialogActions>
-                <MatButton Type="button" OnClick="@OnValidSubmit">Yes</MatButton>
-                <MatButton Type="button" OnClick="@(e => { _showConfirm = false; })">No</MatButton>
+                <MatButton Type="button" OnClick="@(e => { _ShowCreatedPost = false; })">Back</MatButton>
             </MatDialogActions>
-        }
-        else
-        {
-            <MatDialogTitle>Please check error</MatDialogTitle>
-            <MatDivider></MatDivider>
-            <MatDialogContent>
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-            </MatDialogContent>
-            <MatDivider></MatDivider>
-            <MatDialogActions>
-                <MatButton Type="button" OnClick="@(e => { _showConfirm = false; })">Back</MatButton>
-            </MatDialogActions>
-        }
-    </MatDialog>
 
-    <MatDialog @bind-IsOpen="@_ShowCreatedPost">
-        <MatDialogTitle>Success</MatDialogTitle>
-        <MatDivider></MatDivider>
-        <MatDialogContent>
-            <br />
-            <p>Successfully created!</p>
-            <br />
-        </MatDialogContent>
-        <MatDivider></MatDivider>
-        <MatDialogActions>
-            <MatButton Type="button" OnClick="@(e => { _ShowCreatedPost = false; })">Back</MatButton>
-        </MatDialogActions>
-
-    </MatDialog>
-
-</EditForm>
+        </MatDialog>
+    </EditForm>
 }
-
-
-
 
 @code {
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
-    private bool _showConfirm = false;
-
-    private bool _validForm = false;
-    private bool _ShowCreatedPost = false;
-
     [Parameter]
     public int GroupId { get; set; }
 
+    private bool _showConfirm = false;
+    private bool _validForm = false;
+    private bool _ShowCreatedPost = false;
+
+
+    private WorkQueueViewModel workQueueViewModel { get; set; }
     private IDomainViewModel model { get; set; }
 
     protected async override void OnInitialized()
     {
+        workQueueViewModel = new WorkQueueViewModel();
         try
         {
             model = await _questionService.GetQuestionSet(GroupId.ToString());
@@ -153,9 +137,11 @@
 
     private async void OnValidSubmit()
     {
-        var result = await _csuService.PostCSU(model, "Geo");
+        workQueueViewModel.DomainViewModel = model;
 
-        if(result)
+        var result = await _csuService.PostCSU(workQueueViewModel, "Geo");
+
+        if (result)
         {
             model = await _questionService.GetQuestionSet(GroupId.ToString());
             _showConfirm = false;

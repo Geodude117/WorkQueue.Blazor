@@ -1,92 +1,107 @@
 ﻿@page "/QueueComponent/{QueueGroupID}/{QueueGroupName}"
 @inject QueueItemService QueueItemService
-@inject CSUCallbackService CSUCallbackItemService
-
+@inject CSUCallbackService _cSUCallbackItemService
 @inject NavigationManager NavigationManager
+@inject QuestionService _questionService
+
+@using DomainData.Models.ViewModels
 
 @if (QueueGroupID != null)
 {
-<div class="p-1"></div>
-<div class="mat-elevation-z5" style="padding: 10px">
-    <MatCard class="demo-mat-card">
-        <MatCardContent>
-            <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
-                <div class="mat-layout-grid">
-                    <div class="mat-layout-grid-inner">
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                            <MatH6 class="mat-h2">@QueueGroupName</MatH6>
+    <div class="p-1"></div>
+    <div class="mat-elevation-z5" style="padding: 10px">
+        <MatCard class="demo-mat-card">
+            <MatCardContent>
+                <MatBody2 class="demo-mat-card-content demo-mat-card-clean-margin">
+                    <div class="mat-layout-grid">
+                        <div class="mat-layout-grid-inner">
+                            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                <MatH6 class="mat-h2">@QueueGroupName</MatH6>
+                            </div>
+                            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                <MatTable Items="@queueItems" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+                                    <MatTableHeader>
+                                        <th style="width:30px"></th>
+                                        <th style="width:75px">Wescot Reference</th>
+                                        <th style="width:600px">Customer Name</th>
+                                        <th style="width:50px">Due Date</th>
+                                        <th style="width:625px">Summary</th>
+                                    </MatTableHeader>
+                                    <MatTableRow>
+                                        @if (context.DueDate <= DateTime.Now.AddDays(context.RagSet.LowValue))
+                                            {
+                                            <td data-sort="@context.RagSet.LowValue">
+                                            <td style="width:30px;color:red"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
+                                            </td> }
+                                            else
+                                            {
+                                                if (context.DueDate >= DateTime.Now.AddDays(context.RagSet.MidValue))
+                                                {
+                                                <td data-sort="@context.RagSet.HighValue">
+
+                                                <td style="width:30px;color:darkgreen;align-content:center"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
+                                                </td> }
+                                                else
+                                                {
+                                                <td data-sort="@context.RagSet.MidValue">
+
+                                                <td style="width:30px;color:orange"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
+
+                                                </td>}
+                                            }
+                                        <td style="width:75px">@context.WescotRef</td>
+                                        <td style="width:600px">@context.CustomerName</td>
+                                        <td style="width:50px">@context.DueDate.ToShortDateString()</td>
+                                        <td style="width:625px">@context.Summary</td>
+                                    </MatTableRow>
+                                </MatTable>
+                            </div>
                         </div>
-                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
-                            <MatTable Items="@queueItems" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
-                                <MatTableHeader>
-                                    <th style="width:30px"></th>
-                                    <th style="width:75px">Wescot Reference</th>
-                                    <th style="width:600px">Customer Name</th>
-                                    <th style="width:50px">Due Date</th>
-                                    <th style="width:625px">Summary</th>
-                                </MatTableHeader>
-                                <MatTableRow>
-                                    @if (context.DueDate <= DateTime.Now.AddDays(context.RagSet.LowValue))
-                                        {
-                <td data-sort="@context.RagSet.LowValue">
-                <td style="width:30px;color:red"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
-                </td> }
-                else
-                {
-                    if (context.DueDate >= DateTime.Now.AddDays(context.RagSet.MidValue))
-                    {
-                <td data-sort="@context.RagSet.HighValue">
 
-                <td style="width:30px;color:darkgreen;align-content:center"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
-                </td> }
-                else
-                {
-                <td data-sort="@context.RagSet.MidValue">
 
-                <td style="width:30px;color:orange"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
-
-                </td>}
-            }
-                                    <td style="width:75px">@context.WescotRef</td>
-                                    <td style="width:600px">@context.CustomerName</td>
-                                    <td style="width:50px">@context.DueDate.ToShortDateString()</td>
-                                    <td style="width:625px">@context.Summary</td>
-                                </MatTableRow>
-                            </MatTable>
-                        </div>
                     </div>
-
-
-                </div>            </MatBody2>
-        </MatCardContent>
-        <MatCardActions>
-            <MatCardActionButtons>
-                <MatButton type="button" class="btn-color p-4" @onclick="(() => ButtonClick(int.Parse(QueueGroupID)))">Create</MatButton>
-            </MatCardActionButtons>
-            <MatCardActionIcons>
-                <MatIconButton Icon="@MatIconNames.Pageview"></MatIconButton>
-                <MatIconButton Icon="@MatIconNames.Create"></MatIconButton>
-                <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
-            </MatCardActionIcons>
-        </MatCardActions>
-    </MatCard>
-
-
-
-    
-</div>
-
-<MatDialog Style="width:500px" @bind-IsOpen="@dialogIsOpen">
-    <MatDialogTitle>CSU Callback</MatDialogTitle>
-    <MatDivider></MatDivider>
-    <MatDialogContent>
-        <CSUCallbackForm CSUCallbackModel="@CSUmodel" ReadOnly="true"></CSUCallbackForm>
-    </MatDialogContent>
-    <MatDivider></MatDivider>
-    <MatDialogActions>
-    </MatDialogActions>
-
-</MatDialog>
+                </MatBody2>
+            </MatCardContent>
+            <MatCardActions>
+                <MatCardActionButtons>
+                    <MatButton type="button" class="btn-color p-4" @onclick="(() => ButtonClick(int.Parse(QueueGroupID)))">Create</MatButton>
+                </MatCardActionButtons>
+                <MatCardActionIcons>
+                    <MatIconButton Icon="@MatIconNames.Pageview"></MatIconButton>
+                    <MatIconButton Icon="@MatIconNames.Create"></MatIconButton>
+                    <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+                </MatCardActionIcons>
+            </MatCardActions>
+        </MatCard>
+    </div>
+    <EditForm Model="@model">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <MatDialog @bind-IsOpen="@dialogIsOpen" Style=" height: 100%;width: 100%;padding-top:65px">
+            <MatDialogTitle>QueueGroupName Item</MatDialogTitle>
+            <MatDivider></MatDivider>
+            <MatDialogContent Style="overflow: scroll;">
+                <div class="mat-layout-grid mat-layout-grid-align-left">
+                    <div class="mat-layout-grid-inner">
+                        @if (model.DomainInfoViewModels != null)
+                        {
+                            foreach (var domainInfo in model.DomainInfoViewModels)
+                            {
+                                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-12">
+                                    <WorkQueue.Blazor.Components.ControlRenderer domainInfoViewModel="domainInfo"></WorkQueue.Blazor.Components.ControlRenderer>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <br />
+            </MatDialogContent>
+            <MatDivider></MatDivider>
+            <MatDialogActions>
+                <MatButton Type="submit" Icon="create" OnClick="@Success" Label="Process"></MatButton>
+            </MatDialogActions>
+        </MatDialog>
+    </EditForm>
 }
 @code {
     [Parameter]
@@ -95,43 +110,51 @@
     [Parameter]
     public string QueueGroupName { get; set; }
 
-    public QueueGroup CurrentQueueGroup = new QueueGroup();
-    public CSU_Callback CSUmodel { get; set; }
-
+    private CSU_Callback CSUmodel { get; set; }
+    private QueueGroup CurrentQueueGroup = new QueueGroup();
+    private IDomainViewModel model { get; set; } = null;
     private QueueItem[] queueItems { get; set; }
-
-    private QueueItem currentQueueItem { get; set; }
-
     private bool dialogIsOpen = false;
+
+    protected async override void OnInitialized()
+    {
+        model = new DomainViewModel();
+
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         queueItems = await QueueItemService.GetQueueItems(int.Parse(QueueGroupID));
         queueItems.Reverse();
-        //CurrentQueueGroup = await QueueGroupService.Get(QueueGroupID);
-        StateHasChanged();
+
+        this.StateHasChanged();
     }
 
-    private async void GetCSUCallbackItem(string queueItemId)
-    {
-        dialogIsOpen = true;
-        // Make call to services to reteieve the queue item ID
-    }
     public void ButtonClick(int Id)
     {
         NavigationManager.NavigateTo("/QuestionSet/" + Id);
         var x = Id;
     }
+
     public async void SelectionChangedEvent(object row)
     {
         if (row != null)
         {
             var x = (QueueItem)row;
-            CSUmodel = await CSUCallbackItemService.Get(x.QueueItemID.Value);
 
             dialogIsOpen = true;
+            model = await _questionService.GetQuestionSet("2");
+
+            model.DomainInfoViewModels = await _cSUCallbackItemService.Get(x.QueueItemID.Value, model.DomainInfoViewModels);
             this.StateHasChanged();
         }
 
-    } }
+    }
+
+
+    private void Success()
+    {
+        NavigationManager.NavigateTo("/CSUCallbackAction/1");
+    }
+}
 

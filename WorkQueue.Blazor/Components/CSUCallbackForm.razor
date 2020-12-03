@@ -1,6 +1,7 @@
-﻿
+﻿@inject NavigationManager NavigationManager
+
 <EditForm Model="CSUCallbackModel" OnValidSubmit="@Success">
-    <DataAnnotationsValidator />
+    @*<DataAnnotationsValidator />*@
     <div class="mat-layout-grid">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
@@ -16,7 +17,7 @@
                 <MatTextField FullWidth="true" Label="Contact Number" @bind-Value="CSUCallbackModel.TimeToAvoid" ReadOnly="true" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatSelect FullWidth="true" Label="Select" @bind-Value="CSUCallbackModel.Relationship" ReadOnly="true">
+                <MatSelect FullWidth="true" Label="Select" @bind-Value="CSUCallbackModel.Relationship" Disabled="true">
                     <MatOptionString Value=""></MatOptionString>
                     <MatOptionString Value="Customer">Customer</MatOptionString>
                     <MatOptionString Value="Authorised Third Party">Authorised Third Party</MatOptionString>
@@ -33,17 +34,19 @@
                 <ValidationMessage For="@(() => CSUCallbackModel.ReasonForTransfer)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatTextField FullWidth="true" @bind-Value="CSUCallbackModel.ReasonForCallback" Label="Reason For Callback"  ReadOnly="true"></MatTextField>
+                <MatTextField FullWidth="true" @bind-Value="CSUCallbackModel.ReasonForCallback" Label="Reason For Callback" ReadOnly="true"></MatTextField>
                 <ValidationMessage For="@(() => CSUCallbackModel.ReasonForCallback)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
-                <MatSlideToggle @bind-Value="@HealthIssueBool"></MatSlideToggle>
                 <MatTextField FullWidth="true" @bind-Value="CSUCallbackModel.HealthIssue" Label="Health Issue" TextArea="true" ReadOnly="true"></MatTextField>
                 <ValidationMessage For="@(() => CSUCallbackModel.HealthIssue)" />
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
                 <MatTextField FullWidth="true" Label="Queue ItemId" @bind-Value="CSUCallbackModel.QueueItemID" ReadOnly="true" />
                 <ValidationMessage For="@(() => CSUCallbackModel.QueueItemID)" />
+            </div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-8">
+                <MatButton Icon="create" OnClick="@Success" Label="Process"></MatButton>
             </div>
         </div>
     </div>
@@ -73,5 +76,7 @@
 
     private void Success()
     {
+
+        NavigationManager.NavigateTo("/CSUCallbackAction/1");
     }
 }
