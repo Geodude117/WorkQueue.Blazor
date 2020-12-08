@@ -41,7 +41,7 @@ namespace WorkQueue.Blazor
             services.AddSingleton<QuestionService>();
             services.AddSingleton<CSUCallbackService>();
             services.AddSingleton<CustomMapper>();
-
+            services.AddSingleton<QueueResultService>();
 
             services.AddTransient<IHttpConnectionFactory<CSU_Callback>, HttpConnectionFactory<CSU_Callback>>();
             services.AddTransient<IHttpConnectionFactory<QueueGroup>, HttpConnectionFactory<QueueGroup>>();

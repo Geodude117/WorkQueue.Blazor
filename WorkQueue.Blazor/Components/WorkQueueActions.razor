@@ -1,4 +1,4 @@
-﻿@page "/CSUCallbackAction/{QueueId}"
+﻿@page "/WorkQueueAction/{QueueId}"
 @inject QueueResultService QueueResultService
 
 <br />
@@ -33,7 +33,7 @@
     [Parameter]
     public string QueueId { get; set; }
 
-    private QResult[] QResults;
+    private QResult[] QResults = null;
 
     private bool dialogIsOpen = false;
 
