@@ -122,9 +122,6 @@ namespace WorkQueue.Blazor.Helpers
                     return _configuration.GetConnectionString(nameof(QueueGroup));
                 case QResult qResultModel:
                     return _configuration.GetConnectionString(nameof(QResult));
-
-                //case GdprSearchModel gdprSearchModel:
-                //    return _configuration.GetConnectionString(nameof(GdprSearchModel));
                 case QueueModel queueModel:
                     return _configuration.GetConnectionString(nameof(QueueModel));
                 default:

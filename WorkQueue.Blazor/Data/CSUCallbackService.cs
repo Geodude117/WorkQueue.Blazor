@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using WorkQueue.Blazor.Helpers;
@@ -15,22 +16,25 @@ namespace WorkQueue.Blazor.Data
     {
         private readonly IHttpConnectionFactory<QItemHolder> _httpClientConnectionQItemHolder;
         private readonly IHttpConnectionFactory<CSU_Callback> _httpClientConnectionCsuCallback;
+        private readonly IHttpConnectionFactory<QueueItem> _httpClientConnectionQueueItem;
 
         private IConfiguration _config;
         private readonly string _queueItemGroupId;
 
         private readonly CustomMapper _customMapper;
 
-        public CSUCallbackService([FromServices] IHttpConnectionFactory<QItemHolder> httpClientConnection,
-            [FromServices] IHttpConnectionFactory<CSU_Callback> httpClientConnection2,
+        public CSUCallbackService([FromServices] IHttpConnectionFactory<QItemHolder> httpClientConnectionQItemHolder,
+            [FromServices] IHttpConnectionFactory<CSU_Callback> httpClientConnectionCsuCallback,
+            [FromServices] IHttpConnectionFactory<QueueItem> httpClientConnectionQueueItem,
             IConfiguration config,
             [FromServices] CustomMapper customMapper)
         {
             _config = config;
             _queueItemGroupId = _config.GetValue<string>("QueueItemGroupId");
 
-            _httpClientConnectionQItemHolder = httpClientConnection;
-            _httpClientConnectionCsuCallback = httpClientConnection2;
+            _httpClientConnectionQItemHolder = httpClientConnectionQItemHolder;
+            _httpClientConnectionCsuCallback = httpClientConnectionCsuCallback;
+            _httpClientConnectionQueueItem = httpClientConnectionQueueItem;
 
             _customMapper = customMapper;
         }
@@ -42,7 +46,6 @@ namespace WorkQueue.Blazor.Data
             bool result = false;
             try
             {
-                CustomMapper _customMapper = new CustomMapper();
 
                 var csuCallbackItem = _customMapper.Map(model.DomainViewModel.DomainInfoViewModels, model.DomainViewModel.DomainGroup.ClassMapping);
                 var queueItem = _customMapper.Map(model.QueueItemViewModel.DomainInfoViewModels, model.QueueItemViewModel.DomainGroup.ClassMapping);
@@ -75,6 +78,36 @@ namespace WorkQueue.Blazor.Data
             return result;
         }
 
+        public async Task<bool> PostCompleteCSU(int queueResultId, int queueItemId)
+        {
+            QItemHolder qItem = new QItemHolder()
+            {
+                queueItem = (await _httpClientConnectionQueueItem.GetSearchAsync(new SearchParameters() { QueueItemID = queueItemId })).FirstOrDefault(),
+                TModel = await _httpClientConnectionCsuCallback.GetAsync(queueItemId)
+            };
+
+            //This fills in the data needed when a callback is created
+            qItem.queueItem.CompletedDate = DateTime.Now;
+            qItem.queueItem.CompletedBy = "Geo";
+
+            var result = await _httpClientConnectionQItemHolder.PutAsync(queueResultId, qItem);
+
+            return result;
+        }
+
+        //public async Task<CSU_Callback> MapCSU(WorkQueueViewModel model, string userName)
+        //{
+        //    model.QueueItemViewModel = await GetQuestionSet(_queueItemGroupId);
+
+        //    CustomMapper _customMapper = new CustomMapper();
+
+        //    var csuCallbackItem = (CSU_Callback)_customMapper.Map(model.DomainViewModel.DomainInfoViewModels, model.DomainViewModel.DomainGroup.ClassMapping);
+
+        //    csuCallbackItem = (CSU_Callback)_customMapper.MapProperty(csuCallbackItem, "ReasonForTransfer", "NULL");
+
+        //    return csuCallbackItem;
+        //}
+
         public async Task<List<IDomainInfoViewModels>> Get(int Id, List<IDomainInfoViewModels> domainInfoViewModels)
         {
             var result = await _httpClientConnectionCsuCallback.GetAsync(Id);
@@ -82,6 +115,13 @@ namespace WorkQueue.Blazor.Data
             var mappedList = _customMapper.ReMapItemToDynamicList(domainInfoViewModels, result);
 
             return mappedList;
+        }
+
+        public async Task<CSU_Callback> GetCSUCallback (int Id)
+        {
+            var result = await _httpClientConnectionCsuCallback.GetAsync(Id);
+
+            return result;
         }
 
         public async Task<IDomainViewModel> GetQuestionSet(string Id)
@@ -107,5 +147,6 @@ namespace WorkQueue.Blazor.Data
 
             return result;
         }
+
     }
 }

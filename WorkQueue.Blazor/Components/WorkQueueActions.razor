@@ -1,63 +1,83 @@
-﻿@page "/WorkQueueAction/{QueueId}"
-@inject QueueResultService QueueResultService
+﻿@page "/WorkQueueAction/{QueueTitle}/{QueueMessage}/{QueueId}/{QueueItemId}"
 
-<br />
-<MatHeadline5>1st Callback</MatHeadline5>
-<MatHeadline3>Call 01234567891</MatHeadline3>
-<br />
-@if (QResults != null)
-{
-    <MatList SingleSelection="true">
-        @foreach (var item in QResults)
+@using CallBack_Model;
+@inject QueueResultService _queueResultService
+@inject CSUCallbackService  _csuCallbackService
+
+<div class="container-fluid">
+    <br />
+    <div class="mat-elevation-z5" style="padding: 20px;min-height: 450px">
+        <MatHeadline5>@QueueTitle</MatHeadline5>
+        <MatHeadline3>@QueueMessage</MatHeadline3>
+        <br />
+        @if (QResults != null)
         {
-            <MatListItem>
-                <MatListItemText @onclick="@OpenDialog">@item.QueueResult</MatListItemText>
-            </MatListItem>
+            @foreach (var item in QResults)
+            {
+                <MatButton Class="btn-primary" @onclick="(() => OpenDialog(item.QueueResultID))">@item.QueueResult</MatButton>
+                <br />
+            }
         }
-    </MatList>
-}
 
-<MatDialog @bind-IsOpen="@dialogIsOpen">
-    <MatDialogTitle>Confirmation</MatDialogTitle>
-    <MatDialogContent>
-        Are you sure?
-    </MatDialogContent>
-    <MatDialogActions>
-        <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
-        <MatButton Class="btn-primary" OnClick="@OkClick">Yes</MatButton>
-    </MatDialogActions>
-</MatDialog>
+        <MatDialog @bind-IsOpen="@dialogIsOpen">
+            <MatDialogTitle>Confirmation</MatDialogTitle>
+            <MatDialogContent>
+                Are you sure?
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
+                <MatButton Class="btn-primary" OnClick="@OkClick">Yes</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+
+
+
+        <strong>@currentQueueResultId.ToString()</strong>
+
+    </div>
+</div>
+
+
+
 
 @code {
 
     [Parameter]
+    public string QueueTitle { get; set; }
+
+    [Parameter]
+    public string QueueMessage { get; set; }
+
+    [Parameter]
     public string QueueId { get; set; }
 
+    [Parameter]
+    public string QueueItemId { get; set; }
+
     private QResult[] QResults = null;
-
     private bool dialogIsOpen = false;
+    private int currentQueueResultId;
 
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        QResults = await QueueResultService.GetAll(QueueId);
+        QResults = await _queueResultService.GetAll(QueueId);
         this.StateHasChanged();
     }
 
-    //protected override async Task OnParametersSetAsync()
-    //{
-    //    QResults = await QueueResultService.GetAll("1");
-    //}
-
-    private void OpenDialog()
+    private void OpenDialog(int queueResultId)
     {
+        currentQueueResultId = queueResultId;
         dialogIsOpen = true;
+        this.StateHasChanged();
 
     }
 
-    private void OkClick()
+    private async void OkClick()
     {
+        var result = await _csuCallbackService.PostCompleteCSU(currentQueueResultId, int.Parse(QueueItemId));
+
         dialogIsOpen = false;
+        this.StateHasChanged();
 
     }
 }

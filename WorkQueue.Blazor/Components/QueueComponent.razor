@@ -3,6 +3,7 @@
 @inject CSUCallbackService _cSUCallbackItemService
 @inject NavigationManager NavigationManager
 @inject QuestionService _questionService
+@inject QueueService _queueService
 
 @using DomainData.Models.ViewModels
 
@@ -32,7 +33,8 @@
                                             {
                                             <td data-sort="@context.RagSet.LowValue">
                                             <td style="width:30px;color:red"><MatIcon Icon="fiber_manual_record"></MatIcon></td>
-                                            </td> }
+                                            </td>
+                                            }
                                             else
                                             {
                                                 if (context.DueDate >= DateTime.Now.AddDays(context.RagSet.MidValue))
@@ -104,36 +106,34 @@
     </EditForm>
 }
 @code {
-    [Parameter]
-    public string QueueGroupID { get; set; }
+        [Parameter]
+        public string QueueGroupID { get; set; }
 
-    [Parameter]
-    public string QueueGroupName { get; set; }
+        [Parameter]
+        public string QueueGroupName { get; set; }
 
     private CSU_Callback CSUmodel { get; set; }
     private QueueGroup CurrentQueueGroup = new QueueGroup();
     private IDomainViewModel model { get; set; } = null;
     private QueueItem[] queueItems { get; set; }
+    private QueueItem currentQueueItem { get; set; }
     private bool dialogIsOpen = false;
 
-    protected async override void OnInitialized()
+    protected override void OnInitialized()
     {
         model = new DomainViewModel();
-
     }
 
     protected override async Task OnParametersSetAsync()
     {
         queueItems = await QueueItemService.GetQueueItems(int.Parse(QueueGroupID));
         queueItems.Reverse();
-
         this.StateHasChanged();
     }
 
     public void ButtonClick(int Id)
     {
         NavigationManager.NavigateTo("/QuestionSet/" + Id);
-        var x = Id;
     }
 
     public async void SelectionChangedEvent(object row)
@@ -146,15 +146,19 @@
             model = await _questionService.GetQuestionSet("2");
 
             model.DomainInfoViewModels = await _cSUCallbackItemService.Get(x.QueueItemID.Value, model.DomainInfoViewModels);
+            currentQueueItem = x;
             this.StateHasChanged();
         }
-
     }
 
-
-    private void Success()
+    private async void Success()
     {
-        NavigationManager.NavigateTo("WorkQueueAction/1");
+        QueueModel queueModel = await _queueService.Get(QueueGroupID);
+        CSUmodel = await _cSUCallbackItemService.GetCSUCallback(currentQueueItem.QueueItemID.Value);
+        string queueMessage = "Call " + CSUmodel.ContactNumber;
+        string actionURL = ("WorkQueueAction/" + queueModel.Name + "/" + queueMessage + "/" + queueModel.QueueID.ToString() +"/" + CSUmodel.QueueItemID).ToString();
+
+        NavigationManager.NavigateTo(actionURL);
     }
 }
-
+}
