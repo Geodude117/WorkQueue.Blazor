@@ -7,7 +7,7 @@
     <MatNavItem Href="\" AllowSelection="true"><MatIcon Icon="home"></MatIcon>&nbsp;Home Page</MatNavItem>
     <MatNavSubMenu>
         <MatNavSubMenuHeader>
-            <MatNavItem Href="list" AllowSelection="false"><MatIcon Icon="toc"></MatIcon>&nbsp;List</MatNavItem>
+            <MatNavItem Href="QueueGroupList" AllowSelection="false"><MatIcon Icon="toc"></MatIcon>&nbsp;Queue Group List</MatNavItem>
         </MatNavSubMenuHeader>
         <MatNavSubMenuList>
             @if (queueGroups != null)
@@ -22,14 +22,25 @@
 
     <MatNavSubMenu>
         <MatNavSubMenuHeader>
-            <MatNavItem Href="create" AllowSelection="false"><MatIcon Icon="create"></MatIcon>&nbsp;Create</MatNavItem>
+            <MatNavItem Href="QueueList" AllowSelection="false"><MatIcon Icon="toc"></MatIcon>&nbsp;Queue List</MatNavItem>
+        </MatNavSubMenuHeader>
+        <MatNavSubMenuList>
+        </MatNavSubMenuList>
+    </MatNavSubMenu>
+
+    <MatNavSubMenu>
+        <MatNavSubMenuHeader>
+            <MatNavItem Href="create" AllowSelection="false"><MatIcon Icon="create"></MatIcon>&nbsp;Create Work Queue</MatNavItem>
         </MatNavSubMenuHeader>
         <MatNavSubMenuList>
             @if (domainGroup != null)
             {
                 @foreach (var group in domainGroup)
                 {
-                    <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="dynamic_form"></MatIcon>&nbsp;@group.GroupName</MatNavItem>
+                    @if (group.IsActive)
+                    {
+                        <MatNavItem Href="@($"QuestionSet/{group.Id}")"><MatIcon Icon="dynamic_form"></MatIcon>&nbsp;@group.GroupName</MatNavItem>
+                    }
                 }
             }
         </MatNavSubMenuList>

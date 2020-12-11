@@ -2,7 +2,7 @@
 (
     [Id]        INT             NOT NULL IdENTITY,
     [Title]     NVARCHAR (100)  NOT NULL,
-    [ObjectMapping] NVARCHAR (100)  NOT NULL,
+    [PropertyMapping] NVARCHAR (100)   NULL,
     [Order]     INT             NOT NULL,
     [TypeId]    INT             NOT NULL,
     [GroupId]   INT             NOT NULL,

@@ -68,7 +68,12 @@ namespace DomainData.Repository.DomainGroupRepo
                     {
                         entity.GroupName,
                         entity.ExternalReferenceId,
-                        entity.IsActive
+                        entity.IsActive,
+                        entity.ClassMapping,
+                        entity.AccessGroupBase,
+                        entity.AccessGroupPublic,
+                        entity.AccessGroupExtended,
+                        entity.AccessGroupAdmin
                     }, commandType: CommandType.StoredProcedure, transaction: transactionopen));
                     transactionopen.Commit();
 

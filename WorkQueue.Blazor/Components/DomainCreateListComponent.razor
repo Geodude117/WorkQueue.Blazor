@@ -1,5 +1,8 @@
-﻿@page "/DomainCreateList/{domainGroups}"
+﻿@page "/DomainCreateList"
 @using DomainData.Models
+@using RestSharp
+@using DomainData.Models.UIModels
+@inject QueueGroupService _queueGroupService
 
 <div class="mat-elevation-z5" style="padding: 20px; min-height: 450px">
     <MatH6>List of Domain Groups</MatH6>
@@ -10,29 +13,33 @@
             {
                 @foreach (var domainGroup in domainGroups)
                 {
-                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
-                        <MatCard class="demo-mat-card" Style="width:300px">
-                            <div class="demo-mat-card-content">
-                                <MatHeadline6 class="demo-mat-card-clean-margin">
-                                    <div class="p-1">Create @domainGroup.GroupName</div>
-                                </MatHeadline6>
-                            </div>
-                            <MatCardContent>
-                                <MatCardMedia Style="" Wide="true">
-                                    <MatIcon Style="font-size:170px; padding-left:60px;" Icon="create"></MatIcon>
-                                </MatCardMedia>
-                            </MatCardContent>
-                            <MatCardActions>
-                                <MatCardActionButtons>
-                                    <MatButton Style="color:#1976d2">Create</MatButton>
-                                    <MatButton Style="color:#1976d2">View Queues</MatButton>
-                                </MatCardActionButtons>
-                                <MatCardActionIcons>
-                                    <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
-                                </MatCardActionIcons>
-                            </MatCardActions>
-                        </MatCard>
-                    </div>
+                    if (domainGroup.IsActive)
+                    {
+                        <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                            <MatCard class="demo-mat-card" Style="width:300px">
+                                <div class="demo-mat-card-content">
+                                    <MatHeadline6 class="demo-mat-card-clean-margin">
+                                        <div class="p-1">Create @domainGroup.GroupName</div>
+                                    </MatHeadline6>
+                                </div>
+                                <MatCardContent>
+                                    <MatCardMedia Style="" Wide="true">
+                                        <MatIcon Style="font-size:170px; padding-left:60px;" Icon="create"></MatIcon>
+                                    </MatCardMedia>
+                                </MatCardContent>
+                                <MatCardActions>
+                                    <MatCardActionButtons>
+                                        <MatButton Style="color:#1976d2">Create</MatButton>
+                                        <MatButton Style="color:#1976d2">View Queues</MatButton>
+                                    </MatCardActionButtons>
+                                    <MatCardActionIcons>
+                                        <MatIconButton Icon="@MatIconNames.Dashboard"></MatIconButton>
+                                    </MatCardActionIcons>
+                                </MatCardActions>
+                            </MatCard>
+                        </div>
+                    }
+
                 }
             }
             else
@@ -44,11 +51,22 @@
         </div>
     </div>
 </div>
+
+
 @code {
-    [Parameter]
-    public IEnumerable<DomainGroup> domainGroups { get; set; }
 
+    private IEnumerable<DomainGroup> domainGroups;
 
+    public string selectedGroupID;
 
+    List<GroupData> groupData = new List<GroupData>();
+    protected override async Task OnInitializedAsync()
+    {
 
+        var client = new RestClient("http://localhost:52388/");
+        var request = new RestRequest("api/DomainData/", Method.GET);
+        var queryResult = client.Execute<List<DomainGroup>>(request).Data;
+
+        domainGroups = (IEnumerable<DomainGroup>)queryResult;
+    }
 }

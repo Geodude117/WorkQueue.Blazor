@@ -1,0 +1,87 @@
+﻿@page "/WorkQueueAction/{QueueTitle}/{QueueMessage}/{QueueId}/{QueueItemId}"
+
+@using CallBack_Model;
+@inject QueueResultService _queueResultService
+@inject CSUCallbackService  _csuCallbackService
+@inject NavigationManager _navigationManager
+
+<div class="container-fluid">
+    <br />
+    <div class="mat-elevation-z5" style="padding: 20px;min-height: 450px">
+        <MatHeadline5>@QueueTitle</MatHeadline5>
+        <MatHeadline3>@QueueMessage</MatHeadline3>
+        <br />
+        @if (QResults != null)
+        {
+            @foreach (var item in QResults)
+            {
+                <MatButton Class="btn-primary" @onclick="(() => OpenDialog(item.QueueResultID))">@item.QueueResult</MatButton>
+                <br />
+            }
+        }
+
+        <MatDialog @bind-IsOpen="@dialogIsOpen">
+            <MatDialogTitle>Confirmation</MatDialogTitle>
+            <MatDialogContent>
+                Are you sure? 
+                Queue Result Id : @currentQueueResultId.ToString()
+            </MatDialogContent>
+            <MatDialogActions>
+                <MatButton Class="btn-primary" OnClick="@OkClick">Yes</MatButton>
+                <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
+            </MatDialogActions>
+        </MatDialog>
+
+    </div>
+</div>
+
+
+
+
+@code {
+
+    [Parameter]
+    public string QueueTitle { get; set; }
+
+    [Parameter]
+    public string QueueMessage { get; set; }
+
+    [Parameter]
+    public string QueueId { get; set; }
+
+    [Parameter]
+    public string QueueItemId { get; set; }
+
+    private QResult[] QResults = null;
+    private bool dialogIsOpen = false;
+    private int currentQueueResultId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        QResults = await _queueResultService.GetAll(QueueId);
+        this.StateHasChanged();
+    }
+
+    private void OpenDialog(int queueResultId)
+    {
+        currentQueueResultId = queueResultId;
+        dialogIsOpen = true;
+        this.StateHasChanged();
+
+    }
+
+    private async void OkClick()
+    {
+        var result = await _csuCallbackService.PostCompleteCSU(currentQueueResultId, int.Parse(QueueItemId));
+
+        if (result)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+
+        dialogIsOpen = false;
+
+        this.StateHasChanged();
+
+    }
+}

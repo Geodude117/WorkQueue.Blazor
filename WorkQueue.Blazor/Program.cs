@@ -18,11 +18,19 @@ namespace WorkQueue.Blazor
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        public static IHostBuilder CreateHostBuilder(string[] args)
+             => Host.CreateDefaultBuilder(args)
+                 .ConfigureWebHostDefaults(webBuilder =>
+                 {
+                     webBuilder.UseStartup<Startup>()
+                         .CaptureStartupErrors(true)
+                         .ConfigureAppConfiguration(config =>
+                         {
+                             config
+                                 // Used for local settings like connection strings.
+                                 .AddJsonFile("appsettings.json", optional: true);
+                         });
+
+                 });
     }
 }

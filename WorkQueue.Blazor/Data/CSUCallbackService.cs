@@ -1,11 +1,12 @@
 ﻿using CallBack_Model.Model;
-using DomainData.Models.QuestionModels;
 using DomainData.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Net.Http;
 using System.Threading.Tasks;
 using WorkQueue.Blazor.Helpers;
 
@@ -13,131 +14,138 @@ namespace WorkQueue.Blazor.Data
 {
     public class CSUCallbackService
     {
-        private readonly IHttpConnectionFactory<QItemHolder> _httpClientConnection;
-        private readonly IHttpConnectionFactory<CSU_Callback> _httpClientConnection2;
+        private readonly IHttpConnectionFactory<QItemHolder> _httpClientConnectionQItemHolder;
+        private readonly IHttpConnectionFactory<CSU_Callback> _httpClientConnectionCsuCallback;
+        private readonly IHttpConnectionFactory<QueueItem> _httpClientConnectionQueueItem;
 
-        public CSUCallbackService([FromServices] IHttpConnectionFactory<QItemHolder> httpClientConnection, [FromServices] IHttpConnectionFactory<CSU_Callback> httpClientConnection2)
+        private IConfiguration _config;
+        private readonly string _queueItemGroupId;
+
+        private readonly CustomMapper _customMapper;
+
+        public CSUCallbackService([FromServices] IHttpConnectionFactory<QItemHolder> httpClientConnectionQItemHolder,
+            [FromServices] IHttpConnectionFactory<CSU_Callback> httpClientConnectionCsuCallback,
+            [FromServices] IHttpConnectionFactory<QueueItem> httpClientConnectionQueueItem,
+            IConfiguration config,
+            [FromServices] CustomMapper customMapper)
         {
-            _httpClientConnection = httpClientConnection;
-            _httpClientConnection2 = httpClientConnection2;
+            _config = config;
+            _queueItemGroupId = _config.GetValue<string>("QueueItemGroupId");
+
+            _httpClientConnectionQItemHolder = httpClientConnectionQItemHolder;
+            _httpClientConnectionCsuCallback = httpClientConnectionCsuCallback;
+            _httpClientConnectionQueueItem = httpClientConnectionQueueItem;
+
+            _customMapper = customMapper;
         }
 
-        public async Task<bool> PostCSU(IDomainViewModel model, string userName)
+        public async Task<bool> PostCSU(WorkQueueViewModel model, string userName)
         {
-            var mappedObject = ApplyMap(model, userName);
+            model.QueueItemViewModel = await GetQuestionSet(_queueItemGroupId);
 
-            var result = await _httpClientConnection.PostAsync(mappedObject);
+            bool result = false;
+            try
+            {
+
+                var csuCallbackItem = _customMapper.Map(model.DomainViewModel.DomainInfoViewModels, model.DomainViewModel.DomainGroup.ClassMapping);
+                var queueItem = _customMapper.Map(model.QueueItemViewModel.DomainInfoViewModels, model.QueueItemViewModel.DomainGroup.ClassMapping);
+
+                queueItem = _customMapper.MapProperty(queueItem, "CreatedDate", DateTime.Now);
+                queueItem = _customMapper.MapProperty(queueItem, "CreatedBy", userName);
+                queueItem = _customMapper.MapProperty(queueItem, "QueueID", int.Parse(model.DomainViewModel.DomainGroup.ExternalReferenceId));
+                queueItem = _customMapper.MapProperty(queueItem, "QueueGroupID", int.Parse(model.QueueItemViewModel.DomainGroup.ExternalReferenceId));
+                queueItem = _customMapper.MapProperty(queueItem, "CustomerName", _customMapper.GetProperty(csuCallbackItem, "NameOfcaller"));
+                queueItem = _customMapper.MapProperty(queueItem, "WescotRef", _customMapper.GetProperty(csuCallbackItem, "WescotRef"));
+                queueItem = _customMapper.MapProperty(queueItem, "Summary", _customMapper.GetProperty(csuCallbackItem, "ReasonForCallback"));
+                queueItem = _customMapper.MapProperty(queueItem, "DueDate", _customMapper.GetProperty(csuCallbackItem, "DateForCallback"));
+
+                csuCallbackItem = _customMapper.MapProperty(csuCallbackItem, "ReasonForTransfer", "NULL");
+
+                QItemHolder qItemHolder = new QItemHolder
+                {
+                    queueItem = (QueueItem)queueItem,
+                    TModel = csuCallbackItem
+                };
+
+                result = await _httpClientConnectionQItemHolder.PostAsync(qItemHolder);
+
+            }
+            catch (Exception ex)
+            {
+                var x = ex.Message;
+            }
 
             return result;
         }
 
-        public async Task<CSU_Callback> Get(int Id)
+        public async Task<bool> PostCompleteCSU(int queueResultId, int queueItemId)
         {
-            var result = await _httpClientConnection2.GetAsync(Id);
+            QItemHolder qItem = new QItemHolder()
+            {
+                queueItem = (await _httpClientConnectionQueueItem.GetSearchAsync(new SearchParameters() { QueueItemID = queueItemId })).FirstOrDefault(),
+                TModel = await _httpClientConnectionCsuCallback.GetAsync(queueItemId)
+            };
+
+            //This fills in the data needed when a callback is created
+            qItem.queueItem.CompletedDate = DateTime.Now;
+            qItem.queueItem.CompletedBy = "Geo";
+
+            var result = await _httpClientConnectionQItemHolder.PutAsync(queueResultId, qItem);
+
             return result;
         }
 
-        public QItemHolder ApplyMap (IDomainViewModel model, string userName)
+        //public async Task<CSU_Callback> MapCSU(WorkQueueViewModel model, string userName)
+        //{
+        //    model.QueueItemViewModel = await GetQuestionSet(_queueItemGroupId);
+
+        //    CustomMapper _customMapper = new CustomMapper();
+
+        //    var csuCallbackItem = (CSU_Callback)_customMapper.Map(model.DomainViewModel.DomainInfoViewModels, model.DomainViewModel.DomainGroup.ClassMapping);
+
+        //    csuCallbackItem = (CSU_Callback)_customMapper.MapProperty(csuCallbackItem, "ReasonForTransfer", "NULL");
+
+        //    return csuCallbackItem;
+        //}
+
+        public async Task<List<IDomainInfoViewModels>> Get(int Id, List<IDomainInfoViewModels> domainInfoViewModels)
         {
-            QItemHolder qItemHolder = new QItemHolder();
-          
-            QueueItem queueItem = new QueueItem();
-            CSU_Callback csuCallbackItem = new CSU_Callback();
+            var result = await _httpClientConnectionCsuCallback.GetAsync(Id);
 
-            queueItem.CreatedDate = DateTime.Now;
-            queueItem.CreatedBy = userName;
-            queueItem.QueueID = int.Parse(model.DomainGroup.ExternalReferenceId);
-            queueItem.QueueGroupID = model.DomainGroup.Id;
+            var mappedList = _customMapper.ReMapItemToDynamicList(domainInfoViewModels, result);
 
-            csuCallbackItem.ReasonForTransfer = " ";
-
-            queueItem = MapQueueItem(model.DomainInfoViewModels, queueItem);
-
-            csuCallbackItem = MapCSUCallbackItem(model.DomainInfoViewModels, csuCallbackItem);
-
-            qItemHolder.queueItem = queueItem;
-            qItemHolder.TModel = csuCallbackItem;
-
-            return qItemHolder;
+            return mappedList;
         }
 
-
-        public QueueItem MapQueueItem (List<IDomainInfoViewModels> list, QueueItem queueItem)
+        public async Task<CSU_Callback> GetCSUCallback (int Id)
         {
-            PropertyInfo[] queueItemproperties = typeof(QueueItem).GetProperties();
-            foreach (var domainItem in list)
+            var result = await _httpClientConnectionCsuCallback.GetAsync(Id);
+
+            return result;
+        }
+
+        public async Task<IDomainViewModel> GetQuestionSet(string Id)
+        {
+            DomainViewModel result = null;
+            using (var httpClient = new HttpClient())
             {
-                foreach (PropertyInfo property in queueItemproperties)
+                try
                 {
-                    List<string> mappings = domainItem.DomainInformation.ObjectMapping.Split(',').ToList();
-                    foreach (var item in mappings)
+                    var response = await httpClient.GetStringAsync("http://localhost:52388/api/Question/" + Id);
+
+                    result = JsonConvert.DeserializeObject<DomainViewModel>(response, new JsonSerializerSettings
                     {
-                        if (item == property.Name)
-                        {
-                            switch (domainItem.DomainType.TypeName)
-                            {
-                                case "StringType":
-                                    TextQuestion txtQuestion = (TextQuestion)domainItem.Question;
-                                    property.SetValue(queueItem, txtQuestion.Value);
-                                    break;
-                                case "BoolType":
-                                    BoolQuestion boolQuestion = (BoolQuestion)domainItem.Question;
-                                    property.SetValue(queueItem, boolQuestion.Value);
-                                    break;
-                                case "IntType":
-                                    IntQuestion intQuestion = (IntQuestion)domainItem.Question;
-                                    property.SetValue(queueItem, intQuestion.Value);
-                                    break;
-                                case "DateTimeType":
-                                    DateTimeQuestion dateTimeQuestion = (DateTimeQuestion)domainItem.Question;
-                                    property.SetValue(queueItem, dateTimeQuestion.Value);
-                                    break;
-                            }
-                        }
-                    }
+                        TypeNameHandling = TypeNameHandling.Objects
+                    });
+                }
+                catch (Exception ex)
+                {
+                    var x = ex.Message;
+                    return result;
                 }
             }
 
-            return queueItem;
-        }
-        public CSU_Callback MapCSUCallbackItem(List<IDomainInfoViewModels> list, CSU_Callback csuCallbackItem)
-        {
-            PropertyInfo[] csuCallbackproperties = typeof(CSU_Callback).GetProperties();
-
-            foreach (var domainItem in list)
-            {
-                foreach (PropertyInfo property in csuCallbackproperties)
-                {
-                    List<string> mappings = domainItem.DomainInformation.ObjectMapping.Split(',').ToList();
-                    foreach (var item in mappings)
-                    {
-                        if (item == property.Name)
-                        {
-                            switch (domainItem.DomainType.TypeName)
-                            {
-                                case "StringType":
-                                    TextQuestion txtQuestion = (TextQuestion)domainItem.Question;
-                                    property.SetValue(csuCallbackItem, txtQuestion.Value);
-                                    break;
-                                case "BoolType":
-                                    BoolQuestion boolQuestion = (BoolQuestion)domainItem.Question;
-                                    property.SetValue(csuCallbackItem, boolQuestion.Value);
-                                    break;
-                                case "IntType":
-                                    IntQuestion intQuestion = (IntQuestion)domainItem.Question;
-                                    property.SetValue(csuCallbackItem, intQuestion.Value);
-                                    break;
-                                case "DateTimeType":
-                                    DateTimeQuestion dateTimeQuestion = (DateTimeQuestion)domainItem.Question;
-                                    property.SetValue(csuCallbackItem, dateTimeQuestion.Value);
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return csuCallbackItem;
+            return result;
         }
 
     }

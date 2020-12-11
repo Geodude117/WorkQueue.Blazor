@@ -40,6 +40,10 @@ namespace WorkQueue.Blazor
             services.AddSingleton<QueueItemService>();
             services.AddSingleton<QuestionService>();
             services.AddSingleton<CSUCallbackService>();
+            services.AddSingleton<CustomMapper>();
+            services.AddSingleton<QueueResultService>();
+            services.AddSingleton<QueueService>();
+
 
             services.AddTransient<IHttpConnectionFactory<CSU_Callback>, HttpConnectionFactory<CSU_Callback>>();
             services.AddTransient<IHttpConnectionFactory<QueueGroup>, HttpConnectionFactory<QueueGroup>>();
@@ -47,6 +51,7 @@ namespace WorkQueue.Blazor
             services.AddTransient<IHttpConnectionFactory<QueueItem>, HttpConnectionFactory<QueueItem>>();
             services.AddTransient<IHttpConnectionFactory<QItemHolder>, HttpConnectionFactory<QItemHolder>>();
             services.AddTransient<IHttpConnectionFactory<NotesViewModel>, HttpConnectionFactory<NotesViewModel>>();
+            services.AddTransient<IHttpConnectionFactory<QueueModel>, HttpConnectionFactory<QueueModel>>();
 
         }
 

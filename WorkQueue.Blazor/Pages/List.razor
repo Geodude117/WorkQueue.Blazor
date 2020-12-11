@@ -1,41 +1,16 @@
-﻿@page "/list"
-@using RestSharp
-@using DomainData.Models
-@using DomainData.Models.UIModels
+﻿@page "/QueueGroupList"
+
 @inject QueueGroupService QueueGroupService
 
 @inject NavigationManager NavigationManager
 <div class="container-fluid">
     <div class="p-2"></div>
-    <WorkQueue.Blazor.Components.QueueSelectListComponent selectedGroupID="@selectedGroupID" groupData="groupData"></WorkQueue.Blazor.Components.QueueSelectListComponent>
+    <WorkQueue.Blazor.Components.QueueSelectListComponent></WorkQueue.Blazor.Components.QueueSelectListComponent>
     <div class="p-2"></div>
-    <WorkQueue.Blazor.Components.QueueQuickViewComponent queueGroups="queueGroups"></WorkQueue.Blazor.Components.QueueQuickViewComponent>
+    <WorkQueue.Blazor.Components.QueueQuickViewComponent></WorkQueue.Blazor.Components.QueueQuickViewComponent>
 </div>
-
 
 @code
 {
-
-    private IEnumerable<QueueGroup> queueGroups;
-
-    public string selectedGroupID;
-
-    List<GroupData> groupData = new List<GroupData>();
-
-    protected async override void OnInitialized()
-    {
-        queueGroups = await QueueGroupService.GetAll();
-
-        foreach (var item in queueGroups)
-        {
-            GroupData data = new GroupData();
-            data.Id = item.QueueGroupID;
-            data.Name = item.Name;
-
-            groupData.Add(data);
-        }
-        this.StateHasChanged();
-
-    }
 
 }
