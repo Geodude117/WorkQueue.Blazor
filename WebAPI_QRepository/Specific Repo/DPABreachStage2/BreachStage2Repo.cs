@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using DPABreachModel;
+using DomainData.Models.DPABreachModels;
 using System;
 using System.Collections.Generic;
 using System.Data;

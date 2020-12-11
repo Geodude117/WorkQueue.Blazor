@@ -59,6 +59,6 @@ namespace DomainData.Models.DPABreachModels
 
         public bool DataSubjectReportable { get; set; }
 
-        [Display(Name = "Queue item Identifier")]
         public int? QueueItemID { get; set; }
     }
+}

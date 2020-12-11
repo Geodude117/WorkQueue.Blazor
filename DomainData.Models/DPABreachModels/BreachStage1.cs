@@ -22,7 +22,6 @@ namespace DomainData.Models.DPABreachModels
         public string ActionAlreadyTaken { get; set; }
         public string ResolutionOwner { get; set; }
 
-        [Display(Name = "Queue item Identifier")]
         public int? QueueItemID { get; set; }
 
 

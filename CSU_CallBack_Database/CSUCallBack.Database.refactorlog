@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="b81e718f-4feb-4238-a5b5-1d92a6c72b35" ChangeDateTime="10/09/2018 16:19:31">
+    <Property Name="ElementName" Value="[dbo].[Queue_Group].[QueueGroupID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Queue_Group]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="669f9f34-6e69-4c2e-9a6f-e1b1f68f6753" ChangeDateTime="10/09/2018 16:20:22">
+    <Property Name="ElementName" Value="[dbo].[Queues].[QueueID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Queues]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="96f7a8e0-2107-4128-be69-898efe96b6bb" ChangeDateTime="10/09/2018 16:24:06">
+    <Property Name="ElementName" Value="[workqueue].[QueueItem].[EndDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[workqueue].[QueueItem]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CompletedDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="651e9fdf-d55d-4bea-919a-9def2be66ad5" ChangeDateTime="10/09/2018 16:24:41">
+    <Property Name="ElementName" Value="[workqueue].[QueueItem].[StartDue]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[workqueue].[QueueItem]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CreatedDate" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="8ce64d10-6697-4c82-953c-bda7bfa6e19e" ChangeDateTime="10/10/2018 08:16:59">
+    <Property Name="ElementName" Value="[workqueue].[RAGRule].[AmberValue]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[workqueue].[RAGRule]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="MidValue" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="3f9f0103-34d5-4bd1-9406-620fa8081ea6" ChangeDateTime="10/10/2018 08:41:06">
+    <Property Name="ElementName" Value="[workqueue].[QueueGroup].[AccessGroupAgent]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[workqueue].[QueueGroup]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="AccessGroupBase" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2978541f-a183-41fb-8b62-1aa1c1be540a" ChangeDateTime="10/10/2018 10:25:04">
+    <Property Name="ElementName" Value="[callback].[CallbackDetail].[ThirdPartyRelationship]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[callback].[CallbackDetail]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Relationship" />
+  </Operation>
+</Operations>

@@ -1,5 +1,5 @@
 ﻿using CallBack_Model.Model;
-using DPABreachModel;
+using DomainData.Models.DPABreachModels;
 using System.Threading.Tasks;
 
 namespace WebAPI_QBusiness.DPA_Breach_Logic

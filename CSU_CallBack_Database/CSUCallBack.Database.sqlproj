@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>CSUCallBack.Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{bdb41151-f59b-46a9-aee0-9515fc82b126}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath>
+    </RootPath>
+    <RootNamespace>CSU_CallBack_Database</RootNamespace>
+    <AssemblyName>CSU_CallBack_Database</AssemblyName>
+    <ModelCollation>1033,CI</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetLanguage>CS</TargetLanguage>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <SqlServerVerification>False</SqlServerVerification>
+    <IncludeCompositeObjects>True</IncludeCompositeObjects>
+    <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
+    <IncludeSchemaNameInFileName>False</IncludeSchemaNameInFileName>
+    <GenerateCreateScript>False</GenerateCreateScript>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <SqlTargetName>CSUCallback</SqlTargetName>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+  <ItemGroup>
+    <Folder Include="Properties" />
+    <Folder Include="Security\" />
+    <Folder Include="callback" />
+    <Folder Include="workqueue" />
+    <Folder Include="workqueue\Tables" />
+    <Folder Include="callback\Tables" />
+    <Folder Include="workqueue\Stored Procedures" />
+    <Folder Include="callback\Stored Procedures" />
+    <Folder Include="workqueue\Views" />
+    <Folder Include="workqueue\Scripts" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Stored Procedures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Security\workqueue.sql" />
+    <Build Include="Security\callback.sql" />
+    <Build Include="callback\Tables\CallbackDetail.sql" />
+    <Build Include="workqueue\Tables\QueueGroup.sql" />
+    <Build Include="workqueue\Tables\Queue.sql" />
+    <Build Include="workqueue\Tables\QueueItem.sql" />
+    <Build Include="workqueue\Tables\ActionType.sql" />
+    <Build Include="workqueue\Tables\QueueResult.sql" />
+    <Build Include="workqueue\Tables\QueueAction.sql" />
+    <Build Include="workqueue\Tables\RAGRule.sql" />
+    <Build Include="workqueue\Stored Procedures\ActionType_Select_All.sql" />
+    <Build Include="workqueue\Stored Procedures\RAGRule_Select_All.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueAction_Select_All.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueResult_Select_All.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueGroup_Select_All.sql" />
+    <Build Include="workqueue\Stored Procedures\Queue_Select_All.sql" />
+    <Build Include="callback\Stored Procedures\CallbackDetail_Select_By_ID.sql" />
+    <Build Include="callback\Stored Procedures\CallbackDetail_Select_By_WescotRef.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Select_ById.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Select_ActiveByGroupId.sql" />
+    <Build Include="callback\Stored Procedures\CallbackDetail_Update_By_ID.sql" />
+    <Build Include="callback\Stored Procedures\CallbackDetail_Insert.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Update_By_ID.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Insert.sql" />
+    <Build Include="callback\Stored Procedures\CallbackDetails_Delete.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Delete.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Select_Search.sql" />
+    <Build Include="workqueue\Views\QueueItemWithRAG.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueResult_Search_Action_Code_By_QueueResultID.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueResult_Select_QueueResult_ByQueueID.sql" />
+    <Build Include="dbo\Stored Procedures\usp_RebuildIndexes.sql" />
+    <Build Include="workqueue\Views\Test.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueSearch_User.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItemGdprAnnoymiseMe.sql" />
+    <Build Include="workqueue\Stored Procedures\QueueItem_Delete_WescotRef.sql" />
+    <Build Include="workqueue\Stored Procedures\GdprAnonymiseMe.sql" />
+    <Build Include="workqueue\Stored Procedures\ForgetMe.sql" />
+    <Build Include="callback\Stored Procedures\GdprAnonymiseMe.sql" />
+    <Build Include="callback\Stored Procedures\CallbackDetails_Delete_WescotRef.sql" />
+    <Build Include="Security\WESCOT_SVC_D_ADLKAPP.sql" />
+    <Build Include="workqueue\Scripts\04.DatabaseCreate.Release.sql" />
+    <Build Include="workqueue\Scripts\06.Login.Release.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Work Queues Compare.scmp" />
+    <None Include="workqueue\Scripts\01.AddLink.Release.sql" />
+    <None Include="workqueue\Scripts\02.UpdateGetNotes.Release.sql" />
+    <None Include="workqueue\Scripts\03.AddComplaint.Release.sql" />
+    <None Include="workqueue\Scripts\05.BaseData.Release.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="CSUCallBack.Database.refactorlog" />
+  </ItemGroup>
+</Project>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CallBack_Model.Model;
-using DPABreachModel;
+using DomainData.Models.DPABreachModels;
 using WebAPI_QBusiness.QueueActions_Logic;
 using WebAPI_QRepository;
 using WebAPI_QRepository.Specific_Repo.DPABreachStage1;
