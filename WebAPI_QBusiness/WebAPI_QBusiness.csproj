@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DPABreachModel\DPABreachModel.csproj" />
     <ProjectReference Include="..\WebAPI_QRepository\WebAPI_QRepository.csproj" />
   </ItemGroup>
 
