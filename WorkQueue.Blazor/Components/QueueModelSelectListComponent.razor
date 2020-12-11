@@ -1,0 +1,41 @@
+﻿@page "/QueueModelSelectList"
+@using DomainData.Models.UIModels
+@inject NavigationManager NavigationManager
+@inject QueueService _queueService
+
+<div class="mat-elevation-z5" style="padding: 20px">
+    <MatH6>Select Queues (TO DO)</MatH6>
+    <div class="p-1"></div>
+    @if (queueModels != null)
+    {
+        <MatSelectValue Label="Select Queues" @bind-Value="@selectedGroupID" Items="@queueModels" ValueSelector="@(i=>i.QueueID.ToString())">
+            <ItemTemplate>
+                <span>@context.Name</span>
+            </ItemTemplate>
+        </MatSelectValue>
+    <MatButton Style="color:#1976d2" OnClick="@ViewQueue">View Queues</MatButton>
+    }
+</div>
+
+
+
+@code {
+
+    private string selectedGroupID { get; set; }
+    private List<QueueModel> queueModels { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        queueModels = await _queueService.GetAll();
+    }
+
+    private void ViewQueue()
+    {
+        //TODO: Need to use the correct queueId
+        //int parsedSelectedGroupId = int.Parse(selectedGroupID);
+
+        //string selectedGroupName = queueModels.Single(s => s.QueueID == parsedSelectedGroupId).Name;
+
+        //NavigationManager.NavigateTo("QueueComponent/" + selectedGroupID + "/" + selectedGroupName);
+    }
+}

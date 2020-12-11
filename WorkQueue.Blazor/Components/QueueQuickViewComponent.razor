@@ -1,6 +1,8 @@
-﻿@page "/QueueQuickVIew/{queueGroups}"
+﻿@page "/QueueQuickView/"
+@inject QueueGroupService _queueGroupService
+
 <div class="mat-elevation-z5" style="padding: 20px;min-height: 450px">
-    <MatH6>Quick View</MatH6>
+    <MatH6>Queue Group Quick View</MatH6>
     <div class="p-1"></div>
     @if (queueGroups != null)
     {
@@ -30,10 +32,13 @@
     }
 </div>
 
-
 @code {
 
-    [Parameter]
-    public IEnumerable<QueueGroup> queueGroups { get; set; }
+    private List<QueueGroup> queueGroups = new List<QueueGroup>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        queueGroups = await _queueGroupService.GetAll();
+    }
 
 }

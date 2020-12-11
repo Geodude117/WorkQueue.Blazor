@@ -7,24 +7,11 @@
 @inject NavigationManager NavigationManager
 <div class="container-fluid">
     <div class="p-2"></div>
-    <WorkQueue.Blazor.Components.DomainCreateListComponent domainGroups="domainGroups"></WorkQueue.Blazor.Components.DomainCreateListComponent>
+    <WorkQueue.Blazor.Components.DomainCreateListComponent></WorkQueue.Blazor.Components.DomainCreateListComponent>
 </div>
 
 @code
 {
 
-    private IEnumerable<DomainGroup> domainGroups;
-
-    protected async override void OnInitialized()
-    {
-        var client = new RestClient("http://localhost:52388/");
-        var request = new RestRequest("api/DomainData/", Method.GET);
-        var queryResult = client.Execute<List<DomainGroup>>(request).Data;
-
-        domainGroups = (IEnumerable<DomainGroup>)queryResult;
-
-        this.StateHasChanged();
-
-    }
-
+    
 }

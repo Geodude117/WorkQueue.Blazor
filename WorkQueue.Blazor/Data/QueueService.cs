@@ -17,16 +17,16 @@ namespace WorkQueue.Blazor.Data
             _httpClient = httpClientConnection;
         }
 
-        //public async Task<List<QueueModel>> GetAll()
-        //{
-        //    var result = await _httpClient.GetAllAsync();
-        //    return result.ToList();
-        //}
-
-        public async Task<QueueModel> Get(string queueGroupID)
+        public async Task<QueueModel> Get(string queueID)
         {
-            var result = await _httpClient.GetAsync(int.Parse(queueGroupID));
+            var result = await _httpClient.GetAsync(int.Parse(queueID));
             return result;
+        }
+
+        public async Task<List<QueueModel>> GetAll()
+        {
+            var result = await _httpClient.GetAllAsync();
+            return (List<QueueModel>)result;
         }
     }
 }

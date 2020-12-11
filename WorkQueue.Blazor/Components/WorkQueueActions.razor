@@ -3,6 +3,7 @@
 @using CallBack_Model;
 @inject QueueResultService _queueResultService
 @inject CSUCallbackService  _csuCallbackService
+@inject NavigationManager _navigationManager
 
 <div class="container-fluid">
     <br />
@@ -22,17 +23,14 @@
         <MatDialog @bind-IsOpen="@dialogIsOpen">
             <MatDialogTitle>Confirmation</MatDialogTitle>
             <MatDialogContent>
-                Are you sure?
+                Are you sure? 
+                Queue Result Id : @currentQueueResultId.ToString()
             </MatDialogContent>
             <MatDialogActions>
-                <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
                 <MatButton Class="btn-primary" OnClick="@OkClick">Yes</MatButton>
+                <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
             </MatDialogActions>
         </MatDialog>
-
-
-
-        <strong>@currentQueueResultId.ToString()</strong>
 
     </div>
 </div>
@@ -76,7 +74,13 @@
     {
         var result = await _csuCallbackService.PostCompleteCSU(currentQueueResultId, int.Parse(QueueItemId));
 
+        if (result)
+        {
+            _navigationManager.NavigateTo("/");
+        }
+
         dialogIsOpen = false;
+
         this.StateHasChanged();
 
     }

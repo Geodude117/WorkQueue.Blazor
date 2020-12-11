@@ -1,25 +1,42 @@
-﻿@page "/QueueSelectList/{domainGroups}"
+﻿@page "/QueueSelectList"
 @using DomainData.Models.UIModels
+@using RestSharp
+@using DomainData.Models
+@inject QueueGroupService QueueGroupService
 @inject NavigationManager NavigationManager
 
 <div class="mat-elevation-z5" style="padding: 20px">
-    <MatH6>Select Work Queue</MatH6>
+    <MatH6>Select Queue Groups</MatH6>
     <div class="p-1"></div>
-    <MatSelectValue Label="Select Queue" @bind-Value="@selectedGroupID" Items="@groupData" ValueSelector="@(i=>i.Id.ToString())">
+    <MatSelectValue Label="Select Queue Groups" @bind-Value="@selectedGroupID" Items="@groupData" ValueSelector="@(i=>i.Id.ToString())">
         <ItemTemplate>
             <span>@context.Name</span>
         </ItemTemplate>
     </MatSelectValue>
-    <MatButton Style="color:#1976d2" OnClick="@ViewQueue">View Queues</MatButton>
+    <MatButton Style="color:#1976d2" OnClick="@ViewQueue">View Groups</MatButton>
 
 </div>
 
 @code {
-    [Parameter]
-    public string selectedGroupID { get; set; }
+    private string selectedGroupID { get; set; }
 
-    [Parameter]
-    public List<GroupData> groupData { get; set; }
+    private IEnumerable<QueueGroup> queueGroups;
+
+    List<GroupData> groupData = new List<GroupData>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        queueGroups = await QueueGroupService.GetAll();
+
+        foreach (var item in queueGroups)
+        {
+            GroupData data = new GroupData();
+            data.Id = item.QueueGroupID;
+            data.Name = item.Name;
+
+            groupData.Add(data);
+        }
+    }
 
     private void ViewQueue()
     {

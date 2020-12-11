@@ -104,7 +104,7 @@
     private WorkQueueViewModel workQueueViewModel { get; set; }
     private IDomainViewModel model { get; set; }
 
-    protected async override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         workQueueViewModel = new WorkQueueViewModel();
         try

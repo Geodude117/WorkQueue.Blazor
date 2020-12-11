@@ -1,5 +1,8 @@
-﻿@page "/DomainCreateList/{domainGroups}"
+﻿@page "/DomainCreateList"
 @using DomainData.Models
+@using RestSharp
+@using DomainData.Models.UIModels
+@inject QueueGroupService _queueGroupService
 
 <div class="mat-elevation-z5" style="padding: 20px; min-height: 450px">
     <MatH6>List of Domain Groups</MatH6>
@@ -48,8 +51,22 @@
         </div>
     </div>
 </div>
-@code {
-    [Parameter]
-    public IEnumerable<DomainGroup> domainGroups { get; set; }
 
+
+@code {
+
+    private IEnumerable<DomainGroup> domainGroups;
+
+    public string selectedGroupID;
+
+    List<GroupData> groupData = new List<GroupData>();
+    protected override async Task OnInitializedAsync()
+    {
+
+        var client = new RestClient("http://localhost:52388/");
+        var request = new RestRequest("api/DomainData/", Method.GET);
+        var queryResult = client.Execute<List<DomainGroup>>(request).Data;
+
+        domainGroups = (IEnumerable<DomainGroup>)queryResult;
+    }
 }
