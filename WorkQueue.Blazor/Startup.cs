@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using CallBack_Model.Model;
 using DebtManager3NotesModels.Models;
+using DomainData.Models;
+using DomainData.Models.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
@@ -40,9 +42,10 @@ namespace WorkQueue.Blazor
             services.AddSingleton<QueueItemService>();
             services.AddSingleton<QuestionService>();
             services.AddSingleton<CSUCallbackService>();
-            services.AddSingleton<CustomMapper>();
+            services.AddSingleton<CustomMapper>(); 
             services.AddSingleton<QueueResultService>();
             services.AddSingleton<QueueService>();
+            services.AddSingleton<DomainGroupService>();
 
 
             services.AddTransient<IHttpConnectionFactory<CSU_Callback>, HttpConnectionFactory<CSU_Callback>>();
@@ -52,6 +55,8 @@ namespace WorkQueue.Blazor
             services.AddTransient<IHttpConnectionFactory<QItemHolder>, HttpConnectionFactory<QItemHolder>>();
             services.AddTransient<IHttpConnectionFactory<NotesViewModel>, HttpConnectionFactory<NotesViewModel>>();
             services.AddTransient<IHttpConnectionFactory<QueueModel>, HttpConnectionFactory<QueueModel>>();
+            services.AddTransient<IHttpConnectionFactory<DomainGroup>, HttpConnectionFactory<DomainGroup>>();
+            services.AddTransient<IHttpConnectionFactory<DomainViewModel>, HttpConnectionFactory<DomainViewModel>>();
 
         }
 

@@ -10,22 +10,22 @@ namespace WorkQueue.Blazor.Data
 {
     public class QueueService
     {
-        private IHttpConnectionFactory<QueueModel> _httpClient;
+        private IHttpConnectionFactory<QueueModel> _httpClientConnection;
 
         public QueueService([FromServices] IHttpConnectionFactory<QueueModel> httpClientConnection)
         {
-            _httpClient = httpClientConnection;
+            _httpClientConnection = httpClientConnection;
         }
 
         public async Task<QueueModel> Get(string queueID)
         {
-            var result = await _httpClient.GetAsync(int.Parse(queueID));
+            var result = await _httpClientConnection.GetAsync(int.Parse(queueID));
             return result;
         }
 
         public async Task<List<QueueModel>> GetAll()
         {
-            var result = await _httpClient.GetAllAsync();
+            var result = await _httpClientConnection.GetAllAsync();
             return (List<QueueModel>)result;
         }
     }

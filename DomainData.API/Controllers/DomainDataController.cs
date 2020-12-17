@@ -18,7 +18,8 @@ namespace DomainData.API.Controllers
         [HttpGet]
         public async Task<IEnumerable<DomainGroup>> Get([FromServices] IDomainGroupBusiness GroupBusiness)
         {
-            return await GroupBusiness.GetAllDomainGroup();
+            var x =  await GroupBusiness.GetAllDomainGroup();
+            return x;
         }
 
         // GET api/<DomainDataController>/5s

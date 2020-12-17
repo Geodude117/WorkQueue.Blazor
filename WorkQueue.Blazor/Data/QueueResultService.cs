@@ -8,16 +8,16 @@ namespace WorkQueue.Blazor.Data
 {
     public class QueueResultService
     {
-        private IHttpConnectionFactory<QResult> _httpClient;
+        private IHttpConnectionFactory<QResult> _httpClientConnection;
 
         public QueueResultService([FromServices] IHttpConnectionFactory<QResult> httpClientConnection)
         {
-            _httpClient = httpClientConnection;
+            _httpClientConnection = httpClientConnection;
         }
 
         public async Task<QResult[]> GetAll(string QueueId)
         {
-            var result = await _httpClient.GetAllAsync(int.Parse(QueueId));
+            var result = await _httpClientConnection.GetAllAsync(int.Parse(QueueId));
             return result.ToArray();
         }
     }

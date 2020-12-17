@@ -116,10 +116,10 @@
     public string QueueGroupName { get; set; }
 
     private CSU_Callback CSUmodel { get; set; }
-    private QueueGroup CurrentQueueGroup = new QueueGroup();
+    private QueueGroup CurrentQueueGroup { get; set; }
     private QueueItem[] queueItems { get; set; }
     private QueueItem currentQueueItem { get; set; }
-    private IDomainViewModel model { get; set; } = null;
+    private IDomainViewModel model { get; set; }
 
 
     private string dialogTitle { get; set; }

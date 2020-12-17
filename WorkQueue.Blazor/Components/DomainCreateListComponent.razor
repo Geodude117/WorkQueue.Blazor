@@ -2,7 +2,7 @@
 @using DomainData.Models
 @using RestSharp
 @using DomainData.Models.UIModels
-@inject QueueGroupService _queueGroupService
+@inject DomainGroupService _domainGroupService;
 
 <div class="mat-elevation-z5" style="padding: 20px; min-height: 450px">
     <MatH6>List of Domain Groups</MatH6>
@@ -55,18 +55,11 @@
 
 @code {
 
-    private IEnumerable<DomainGroup> domainGroups;
+    private List<DomainGroup> domainGroups = new List<DomainGroup>();
 
-    public string selectedGroupID;
-
-    List<GroupData> groupData = new List<GroupData>();
-    protected override async Task OnInitializedAsync()
+    protected override async void OnInitialized()
     {
-
-        var client = new RestClient("http://localhost:52388/");
-        var request = new RestRequest("api/DomainData/", Method.GET);
-        var queryResult = client.Execute<List<DomainGroup>>(request).Data;
-
-        domainGroups = (IEnumerable<DomainGroup>)queryResult;
+        domainGroups =  await _domainGroupService.GetAll();
+        this.StateHasChanged();
     }
 }

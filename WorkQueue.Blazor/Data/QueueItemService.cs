@@ -13,17 +13,19 @@ namespace WorkQueue.Blazor.Data
 {
     public class QueueItemService
     {
-        private readonly IHttpConnectionFactory<QueueItem> _httpClient;
+        private readonly IHttpConnectionFactory<QueueItem> _httpClientConnectionQueueItem;
+        private readonly IHttpConnectionFactory<DomainViewModel> _httpClientConnectionDomainViewModel;
 
         private IConfiguration _config;
         private readonly string _queueItemGroupId;
         private readonly CustomMapper _customMapper;
 
-        public QueueItemService([FromServices] IHttpConnectionFactory<QueueItem> httpClientConnection,
+        public QueueItemService([FromServices] IHttpConnectionFactory<QueueItem> httpClientConnectionQueueItem,
+            [FromServices] IHttpConnectionFactory<DomainViewModel> httpClientConnectionDomainViewModel,
             IConfiguration config,
             [FromServices] CustomMapper customMapper)
         {
-            _httpClient = httpClientConnection;
+            _httpClientConnectionQueueItem = httpClientConnectionQueueItem;
             _config = config;
             _queueItemGroupId = _config.GetValue<string>("QueueItemGroupId");
 
@@ -32,19 +34,19 @@ namespace WorkQueue.Blazor.Data
 
         public async Task<QueueItem[]> GetQueueItems(int QueueGroup)
         {
-            var result = await _httpClient.GetAllAsync(QueueGroup);
+            var result = await _httpClientConnectionQueueItem.GetAllAsync(QueueGroup);
             return result.ToArray();
         }
 
          public async Task<QueueItem> GetQueueItem(int QueueItemID)
         {
-            QueueItem result = (await _httpClient.GetSearchAsync(new SearchParameters() { QueueItemID = QueueItemID })).FirstOrDefault();
+            QueueItem result = (await _httpClientConnectionQueueItem.GetSearchAsync(new SearchParameters() { QueueItemID = QueueItemID })).FirstOrDefault();
             return result;
         }
 
         public async Task<QueueItem> MapQueueItem(WorkQueueViewModel model, string userName)
         {
-            model.QueueItemViewModel = await GetQuestionSet(_queueItemGroupId);
+            model.QueueItemViewModel = await _httpClientConnectionDomainViewModel.GetAsync(int.Parse(_queueItemGroupId));
 
             var csuCallbackItem = _customMapper.Map(model.DomainViewModel.DomainInfoViewModels, model.DomainViewModel.DomainGroup.ClassMapping);
             var queueItem = (QueueItem)_customMapper.Map(model.QueueItemViewModel.DomainInfoViewModels, model.QueueItemViewModel.DomainGroup.ClassMapping);
@@ -60,30 +62,5 @@ namespace WorkQueue.Blazor.Data
 
             return queueItem;
         }
-
-        public async Task<IDomainViewModel> GetQuestionSet(string Id)
-        {
-            DomainViewModel result = null;
-            using (var httpClient = new HttpClient())
-            {
-                try
-                {
-                    var response = await httpClient.GetStringAsync("http://localhost:52388/api/Question/" + Id);
-
-                    result = JsonConvert.DeserializeObject<DomainViewModel>(response, new JsonSerializerSettings
-                    {
-                        TypeNameHandling = TypeNameHandling.Objects
-                    });
-                }
-                catch (Exception ex)
-                {
-                    var x = ex.Message;
-                    return result;
-                }
-            }
-
-            return result;
-        }
-
     }
 }
