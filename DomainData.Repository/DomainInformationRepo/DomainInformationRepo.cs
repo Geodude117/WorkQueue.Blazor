@@ -58,8 +58,10 @@ namespace DomainData.Repository.DomainInformationRepo
                         entity.Title,
                         entity.PropertyMapping,
                         entity.Order,
+                        entity.Arguments,
                         entity.TypeId,
-                        entity.GroupId
+                        entity.GroupId,
+                        entity.HasValidation
                     }, commandType: CommandType.StoredProcedure, transaction: transactionopen));
                     transactionopen.Commit();
 

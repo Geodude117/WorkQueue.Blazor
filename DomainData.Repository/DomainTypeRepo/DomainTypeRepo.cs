@@ -21,9 +21,22 @@ namespace DomainData.Repository.DomainTypeRepo
             throw new System.NotImplementedException();
         }
 
-        public override Task<IEnumerable<DomainType>> GetAllAsync()
+        public override async Task<IEnumerable<DomainType>> GetAllAsync()
         {
-            throw new System.NotImplementedException();
+
+            try
+            {
+                using IDbConnection connection = Connection;
+                return (await connection.QueryAsync<DomainType>("[dbo].[DomainType_Select_All]",
+                    commandType: CommandType.StoredProcedure)).DefaultIfEmpty();
+            }
+            catch (SqlException ex)
+            {
+                throw ex;
+            }
+
+
+            //throw new System.NotImplementedException();
         }
 
         public override Task<IEnumerable<DomainType>> GetAllByGroupIdAsync(int GroupId)

@@ -1,0 +1,41 @@
+﻿
+@page "/createdomainType"
+@using DomainData.Models
+@inject DomainTypeService _domainTypeService;
+<div class="p-2"></div>
+
+<EditForm Model="DomainType" OnValidSubmit="Success">
+    <DataAnnotationsValidator />
+    <div class="container-fluid">
+        <div class="mat-elevation-z5" style="padding: 20px; min-height: 450px">
+            <MatH3>Create Domain Type</MatH3>
+            <div class="p-1"></div>
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Type Name" @bind-Value="DomainType.TypeName" FullWidth="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Class Object" @bind-Value="DomainType.ClassObject" FullWidth="true" />
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</EditForm>
+
+@code{
+
+    DomainType DomainType = new DomainType();
+
+    public void Success()
+    {
+        var result = _domainTypeService.Post(DomainType);
+    }
+
+   
+}

@@ -1,0 +1,67 @@
+﻿
+@page "/createdomaininformation"
+@using DomainData.Models
+@inject DomainTypeService _domainTypeService;
+
+@if (DomainInformation != null)
+{
+    <div class="p-3"></div>
+    <EditForm Model="@DomainInformation">
+        <DataAnnotationsValidator />
+        <MatDivider></MatDivider>
+        <div class="p-1"></div>
+
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatTextField Label="Title" @bind-Value="DomainInformation.Title" FullWidth="true" Required="true" />
+            </div>
+
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                <MatTextField Label="Property Mapping" @bind-Value="DomainInformation.PropertyMapping" FullWidth="true" Required="true" />
+            </div>
+
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                <MatSelect Label="Type Id" FullWidth="true" @bind-Value="DomainInformation.TypeId">
+                    @foreach (var item in DomainTypeArray)
+                        {
+                        <MatOption Value="@item.Id">@item.TypeName - @item.ClassObject </MatOption>
+                        }
+                </MatSelect>
+            </div>
+
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-6">
+                <MatTextField Label="Arguments" @bind-Value="DomainInformation.Arguments" FullWidth="true" Required="true" />
+            </div>
+
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                <MatTextField Label="Group Id" @bind-Value="DomainInformation.GroupId" FullWidth="true" Required="true" />
+            </div>
+
+
+
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3" style="padding-top:20px">
+                <MatCheckbox Label="Has Validation" @bind-Value="DomainInformation.HasValidation" Indeterminate="true"></MatCheckbox>
+                <MatButton OnClick="@(_ =>
+                                 {
+                                     DomainInformation.HasValidation = false;
+                                 })">Clear</MatButton>
+                <ValidationMessage For="@(() => DomainInformation.HasValidation)" />
+            </div>
+        </div>
+    </EditForm>
+    <div class="p-1"></div>
+
+    <MatDivider></MatDivider>
+}
+
+@code{
+    [Parameter]
+    public DomainInformation DomainInformation { get; set; }
+
+    DomainType[] DomainTypeArray;
+
+    protected override void OnInitialized()
+    {
+        DomainTypeArray = _domainTypeService.GetAll().ToArray();
+    }
+}

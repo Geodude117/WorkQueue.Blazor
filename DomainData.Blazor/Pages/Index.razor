@@ -1,0 +1,174 @@
+﻿
+@page "/"
+@using DomainData.Models
+@inject DomainDataService _domainDataService;
+@inject DomainInformationService _domainInformationService;
+
+<div class="p-2"></div>
+
+<EditForm Model="DomainGroupModel" OnValidSubmit="Success">
+    <DataAnnotationsValidator />
+    <div class="container-fluid">
+        <div class="mat-elevation-z5" style="padding: 20px; min-height: 450px">
+            <MatH3>Create Domain Group</MatH3>
+            <div class="p-1"></div>
+            <div class="mat-layout-grid">
+                <div class="mat-layout-grid-inner">
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Group Name" @bind-Value="DomainGroupModel.GroupName" FullWidth="true"  Required="true"/>
+
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Class Mapping" @bind-Value="DomainGroupModel.ClassMapping" FullWidth="true" Required="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="External Reference Id" @bind-Value="DomainGroupModel.ExternalReferenceId" FullWidth="true" Required="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Is Active" @bind-Value="DomainGroupModel.IsActive" FullWidth="true" Required="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Access Group Base" @bind-Value="DomainGroupModel.AccessGroupPublic" FullWidth="true" Required="true" />
+                    </div>
+
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Access Group Base" @bind-Value="DomainGroupModel.AccessGroupBase" FullWidth="true" Required="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Access Group Extended" @bind-Value="DomainGroupModel.AccessGroupExtended" FullWidth="true" Required="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatTextField Label="Access Group Admin" @bind-Value="DomainGroupModel.AccessGroupAdmin" FullWidth="true" Required="true" />
+                    </div>
+
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+                        <MatButton Type="Submit" Raised="true">Next</MatButton>
+                        <MatButton Type="button" Raised="true" OnClick="ResetDomainGroup">Reset</MatButton>
+                    </div>
+                </div>
+
+            </div>
+            <div class="p-3"></div>
+            @if (domainInformationVisable != false)
+            {
+                <MatH3>Create Domain Type</MatH3>
+                <div class="p-1"></div>
+                <MatButton Type="button" Raised="true" @onclick="IncrementCount">Add New Item</MatButton>
+                <MatButton Type="button" Raised="true" @onclick="DecremetCount">Remove Last Item</MatButton>
+                <div class="p-1"></div>
+                <div class="mat-layout-grid">
+                    @if (DomainInformationList != null)
+                    {
+                        @foreach (var item in DomainInformationList)
+                        {
+                            <CreateDomainInformation DomainInformation="item"></CreateDomainInformation>
+                        }
+                    }
+                </div>
+                <MatButton Type="button" Raised="true" OnClick="SubmitAll">Submit Domain</MatButton>
+
+            }
+
+        </div>
+    </div>
+</EditForm>
+
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Result</MatDialogTitle>
+    <MatDialogContent>
+      @submissionResult
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
+    </MatDialogActions>
+</MatDialog>
+
+@code{
+
+    private DomainDataViewModel viewModel = new DomainDataViewModel();
+
+    private DomainGroup DomainGroupModel = new DomainGroup();
+
+    private List<DomainInformation> DomainInformationList { get; set; }
+
+    private bool domainGroupVisable = false;
+    private bool domainInformationVisable = false;
+
+    private int currentCount = 1;
+    private bool submissionResult = false;
+    private bool dialogIsOpen = false;
+    protected override void OnInitialized()
+    {
+        DomainInformationList = new List<DomainInformation>();
+        this.StateHasChanged();
+    }
+
+    public void Success()
+    {
+        viewModel.DomainData = DomainGroupModel;
+
+        domainInformationVisable = true;
+        this.StateHasChanged();
+    }
+
+    public void ResetDomainGroup()
+    {
+        DomainGroupModel.GroupName = null;
+        DomainGroupModel.ClassMapping = null;
+        DomainGroupModel.ExternalReferenceId = null;
+        DomainGroupModel.IsActive = false;
+        DomainGroupModel.AccessGroupPublic = null;
+        DomainGroupModel.AccessGroupBase = null;
+        DomainGroupModel.AccessGroupExtended = null;
+        DomainGroupModel.AccessGroupAdmin = null;
+    }
+
+
+    private void IncrementCount()
+    {
+        DomainInformation domainInformation = new DomainInformation();
+        domainInformation.Order = currentCount;
+        currentCount++;
+        DomainInformationList.Add(domainInformation);
+        this.StateHasChanged();
+    }
+
+    private void DecremetCount()
+    {
+        DomainInformationList = DomainInformationList.Take(DomainInformationList.Count() - 1).ToList();
+        currentCount--;
+        this.StateHasChanged();
+    }
+
+    private void SubmitAll()
+    {
+        viewModel.DomainInformation = DomainInformationList;
+        dialogIsOpen = true;
+
+        try
+        {
+            var domainDataResult = _domainDataService.Post(viewModel.DomainData);
+
+            foreach (var domainInfo in viewModel.DomainInformation)
+            {
+                domainInfo.GroupId = domainDataResult;
+                var result = _domainInformationService.Post(domainInfo);
+            }
+
+            submissionResult = true;
+
+        }
+        catch (Exception ex)
+        {
+            submissionResult = false;
+        }
+
+    }
+}
