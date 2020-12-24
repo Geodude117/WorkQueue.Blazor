@@ -20,6 +20,9 @@
                         <MatTextField Label="Class Object" @bind-Value="DomainType.ClassObject" FullWidth="true" />
                     </div>
 
+                    <div class="mat-layout-grid-cell mat-layout-grid-cell-span-3">
+                        <MatBlazor.MatButton Type="submit">Submit</MatBlazor.MatButton>
+                    </div>
                 </div>
 
             </div>
@@ -28,14 +31,45 @@
     </div>
 </EditForm>
 
+<MatDialog @bind-IsOpen="@dialogIsOpen">
+    <MatDialogTitle>Result</MatDialogTitle>
+    <MatDialogContent>
+        @submissionResult
+    </MatDialogContent>
+    <MatDialogActions>
+        <MatButton Class="btn-outline-warning" OnClick="@(e => { dialogIsOpen = false; })">No</MatButton>
+    </MatDialogActions>
+</MatDialog>
 @code{
 
-    DomainType DomainType = new DomainType();
+    private DomainType DomainType = new DomainType();
+    private bool submissionResult = false;
+    private bool dialogIsOpen = false;
 
     public void Success()
     {
-        var result = _domainTypeService.Post(DomainType);
+        dialogIsOpen = true;
+        try
+        {
+            var result = _domainTypeService.Post(DomainType);
+
+            if (result == 1)
+            {
+                submissionResult = true;
+            }
+            else
+            {
+                submissionResult = false;
+            }
+
+            DomainType = new DomainType();
+
+        } catch (Exception ex)
+        {
+            submissionResult = false;
+
+        }
     }
 
-   
+
 }
