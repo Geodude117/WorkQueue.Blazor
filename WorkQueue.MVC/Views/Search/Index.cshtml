@@ -1,0 +1,149 @@
+﻿@model CallBack_Model.Model.SearchParameters
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div id="accordion">
+    <div class="card">
+        <button id="CardPanelheader" class="card-header bg-primary text-white"  onclick="ChangeGlyphicons()" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            <h3 id="AdvancedSearchSetup" class="mb-0">
+                Advanced Search
+            </h3>
+        </button>
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+                <br />
+                <div align="left">
+                    <form asp-action="SearchBy" asp-controller="Search" data-ajax="true" data-ajax-method="POST" 
+                          data-ajax-mode="replace" data-ajax-update="#Queueitems" data-ajax-begin="Began" data-ajax-complete="Completed">
+
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Wescot Reference</span>
+                            </div>
+                            <input asp-for="WescotRef" type="number" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm" >
+                        </div>
+
+                        <br />
+
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Created After</span>
+                            </div>
+                            <input placeholder="dd/mm/yyyy" asp-for="StartDate" type="date" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Completed Before</span>
+                            </div>
+                            <input placeholder="dd/mm/yyyy" asp-for="EndDate" type="date" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+
+                        </div>
+
+                        <br />
+
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Created By</span>
+                            </div>
+                            <input placeholder="e.g 'smithj" asp-for="Raise_AgentId" type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+
+                        <br />
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroup-sizing-lg">Completed By</span>
+                            </div>
+                            <input placeholder="e.g 'smithj" asp-for="Action_AgentId" type="text" class="form-control" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+
+                        </div>
+
+                        <br />
+
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span data-toggle="tooltip" class="input-group-text" id="inputGroup-sizing-lg" Title="Item state, active means currently worked, not active is finished jobs and
+                                  both gives both.">Active State</span>
+                            </div>
+                            <div class="btn-group" role="group">
+                                @Html.HiddenFor(model => model.IsActive)
+                                <button type="button" onclick="ChangeActive(true, this)" class="btn btn-primary">Active</button>
+                                <button type="button" onclick="ChangeActive(false, this)" class="btn btn-primary">Not Active</button>
+                                <button type="button" onclick="ChangeActive(null, this)" class="btn btn-success">Both</button>
+                            </div>
+                        </div>
+
+                        <hr />
+                        <input type="submit" class="btn btn-info RightFloat" />
+
+                        <button type="button" id="GroupClick" class="btn btn-outline-primary" onclick="location.href = '@Url.Action("Index", "WorkQueue")'">Back to Work Queue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<br/>
+<div id="Queueitems" align="center" style="overflow: hidden;">
+</div>
+
+<div id="loader" style="visibility: hidden;">
+    <div class="cube-wrapper">
+        <div class="cube-folding">
+            <span class="leaf1"></span>
+            <span class="leaf2"></span>
+            <span class="leaf3"></span>
+            <span class="leaf4"></span>
+        </div>
+        <span class="loading" data-name="Loading">Loading</span>
+    </div>
+</div>
+<button type="button" id="SecondGroupClick" class="btn btn-outline-primary d-none" onclick="location.href = '@Url.Action("Index", "WorkQueue")'">Back to Work Queue</button>
+
+@section Scripts {
+    <script type="text/javascript">
+        if (!isDateInputSupported()) {
+            $("#EndDate").datepicker({dateFormat: 'dd-mm-yy'});
+            $("#StartDate").datepicker({ dateFormat: 'dd-mm-yy' });
+            $("#WescotRef").on("keypress keyup blur",function (event) {    
+                $(this).val($(this).val().replace(/[^\d].+/, ""));
+                if ((event.which < 48 || event.which > 57)) {
+                    event.preventDefault();
+                }
+            });
+        }
+
+        function ChangeActive(valueEle, object) {
+            $(".btn-success").each(function(i, obj) {
+                $(obj).removeClass("btn-success");
+                $(obj).addClass("btn-primary");
+            });
+            $(object).removeClass("btn-primary");
+            $(object).addClass("btn-success");
+            document.getElementById("IsActive").value = valueEle;
+        }
+
+        function Began() {
+            $("#CardPanelheader").click();
+            onBegin();
+        }
+
+        function Completed() {
+
+            onSuccess();
+        }
+
+        function ChangeGlyphicons() {
+            if ($('#CardPanelheader').attr('aria-expanded') === "true") {
+                $('#CardPanelheader').addClass("card-headerActive");
+            } else {
+                $('#CardPanelheader').removeClass("card-headerActive");
+            }
+            $("#SecondGroupClick").removeClass('d-none');
+        }
+
+    </script>
+    <script src="~/js/WorkQueueIndex.js"></script>
+}

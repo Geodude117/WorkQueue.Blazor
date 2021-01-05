@@ -1,0 +1,185 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.QueueResultViewModel
+@{
+    ViewData["Title"] = "Action";
+}
+
+<div id="QResultClick" style="visibility: hidden;">
+    <div class="card">
+        <div class="jumbotron">
+            <h2>@ViewBag.QueueName</h2>
+            <br />
+            @if (@ViewBag.QueueName == "1st Callback" || @ViewBag.QueueName == "2nd Callback")
+            {
+                <h1>Call <b> @Model.ContactNumber</b> </h1>
+            }
+            else
+            {
+                <h3>Reference :  @Model.QueiQueueItem.WescotRef </h3>
+                <h3>Customer Name :  @Model.QueiQueueItem.CustomerName </h3>
+                <h4>Address Line 1 : @Model.AddressLine1</h4>
+                <h4>Address Line 2 : @Model.AddressLine2</h4>
+                <h4>Address Line 3 : @Model.AddressLine3</h4>
+            }
+
+        </div>
+        <div class="card-body">
+            <div class="col-centered col-sm-12">
+
+                <div class="col-lg-12">
+                    <div class="row">
+                        <input id="IDVurl" value="@Model.IDVWeb" type="hidden" />
+                        
+                        @foreach (var x in Model.QResults)
+                        {
+                            <form asp-controller="Callback" asp-action="QueueResultButtonClick" data-ajax="true" data-ajax-method="GET" data-ajax-mode="replace" data-ajax-update="#QResultClick" >
+                                <input id="queueResultID" name="queueResultID" type="hidden" value="@x.QueueResultID" />
+                                <input id="queueItemName" name="queueItemName" type="hidden" value="@x.QueueResult" />
+                                <input id="queueItemID" name="queueItemID" type="hidden" value="@Model.QueiQueueItem.QueueItemID" />
+
+                                <input id="queueItemID" name="queueItemID" type="hidden" value="@Model.QueiQueueItem.QueueItemID" />
+
+                                @if (x.QueueResult == "Success")
+                                {
+                                    <div class="col-md-6" style="padding-bottom:3vh;">
+                                        <button onclick="RedirectoToIDV()" type="submit" class="btn btn-success ActionResultButton" />
+                                        @Html.DisplayFor(model => x.QueueResult)
+                                    </div>
+                                }
+                                else if (x.QueueResult == "Not Required")
+                                {
+                                    <div class="col-md-6" style="padding-bottom:3vh;">
+                                        <button   onclick="RedirectToWorkQueue()" type="submit" class="btn btn-warning ActionResultButton" />
+                                        @Html.DisplayFor(model => x.QueueResult)
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-md-6" style="padding-bottom:3vh;">
+                                        <button  onclick="RedirectToWorkQueue()" type="submit" class="btn btn-primary ActionResultButton" />
+                                        @Html.DisplayFor(model => x.QueueResult)
+                                    </div>
+
+                                }
+
+                            </form>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button onclick="BackButton()" class=" btn btn-outline-primary pull-left" value="Back">Back to Work Queue</button>
+        </div>
+    </div>
+</div>
+
+
+<div id="loader">
+    <div class="cube-wrapper">
+        <div class="cube-folding">
+            <span class="leaf1"></span>
+            <span class="leaf2"></span>
+            <span class="leaf3"></span>
+            <span class="leaf4"></span>
+        </div>
+        <span class="loading" data-name="Loading">Loading</span>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <script src="~/js/CallbackAction.js"></script>
+
+    <script type="text/javascript">
+        
+        $(document).ready(function (passdata) {
+            $("#loader").hide();
+            $("#QResultClick").css('visibility', 'visible');
+            setTimeout(function () {
+                    swal({
+                        title: 'Timed Out!',
+                        text: "Redirecting to homepage.",
+                        buttons: false,
+                        timer: 1000
+                    }).then(function () {
+                        $.ajax
+                        ({
+                            type: 'GET',
+                            url: '/Callback/Unlock/' + QueueItemID,
+                            dataType: 'html',
+                        });
+                        var url =
+                            '@Url.Action("Index", "WorkQueue", new {SelectedGroupId = Model.QueiQueueItem.QueueGroupID })';
+                        window.location.replace(url);
+                    });
+                },
+                300000);
+        });
+
+        function BackButton() {
+            swal({
+                title: 'Are you sure?',
+                text: "It will redirect you to the Queue List",
+                type: 'warning',
+                buttons: true, 
+                buttons: [
+                    'No, cancel it!',
+                    'Continue!'
+                ],
+                confirmButtonColor: '#428bca',
+                cancelButtonColor: '#d33',
+              
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    var url =
+                        '@Url.Action("Index", "WorkQueue", new {SelectedGroupId = Model.QueiQueueItem.QueueGroupID })';
+                    window.location.replace(url);
+                } else {
+                    toastMe("info", "Back to work queue aborted", "Cancelled");
+                }
+            });
+        }
+
+
+        function RedirectoToIDV(data) {
+            swal({
+                title: 'Callback Sucessful!',
+                text: "Redirecting to I&DV",
+                buttons: false,
+                timer: 1000
+            }).then(function() {
+                window.location =
+                    '@Html.DisplayFor(model => model.IDVWeb)@Html.DisplayFor(model => model.QueiQueueItem.WescotRef)'
+            })
+        };
+
+        function RedirectToWorkQueue() {
+            swal({
+                title: 'Processing Action',
+                text: "Redirecting to Work Queue",
+                buttons: false,
+                timer: 1000
+            }).then(function () {
+                location.href =
+                    '@Url.Action("Index", "WorkQueue", new {SelectedGroupId = Model.QueiQueueItem.QueueGroupID })';
+            })
+        };
+
+
+        var lastClicked;
+        window.onbeforeunload = function () {
+            if (!lastClicked) {
+                $.ajax
+                ({
+                    type: 'GET',
+                    url: '/Callback/Unlock/@Html.DisplayFor(model => model.QueiQueueItem.QueueItemID)',
+                    dataType: 'html',
+                });
+            }
+        };
+
+
+    </script>
+}

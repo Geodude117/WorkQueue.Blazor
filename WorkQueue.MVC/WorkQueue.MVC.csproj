@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="CallBack_Model" Version="1.1.7" />
+    <PackageReference Include="CoreRestfulHttpClientWrapper" Version="1.0.6" />
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="DebtManager3AccountModels" Version="1.2.9.21882" />
+    <PackageReference Include="DebtManager3NotesModels" Version="1.2.1.25005" />
+    <PackageReference Include="GdprInterfaces" Version="1.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.3.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
+    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="2.3.8" />
+    <PackageReference Include="System.DirectoryServices" Version="4.5.0" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\jquery\Jquery UI\" />
+  </ItemGroup>
+
+</Project>

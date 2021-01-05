@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/"
+    },
+    {
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/lib/font-awesome/"
+    },
+    {
+      "library": "iCheck@1.0.2",
+      "destination": "wwwroot/lib/iCheck/"
+    },
+    {
+      "library": "twitter-bootstrap@4.1.3",
+      "destination": "wwwroot/lib/twitter-bootstrap/"
+    },
+    {
+      "library": "sweetalert@2.1.2",
+      "destination": "wwwroot/lib/sweetalert/"
+    },
+    {
+      "library": "popper.js@1.14.5",
+      "destination": "wwwroot/lib/popper.js/"
+    }
+  ]
+}

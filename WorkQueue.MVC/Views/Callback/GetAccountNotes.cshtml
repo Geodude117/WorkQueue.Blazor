@@ -1,0 +1,28 @@
+﻿@model List<DebtManager3NotesModels.Models.NotesViewModel>
+
+<div class="modal-content-fixed-height">
+
+    @foreach (var note in Model)
+    {
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <span class="fa fa-envelope-o"></span>
+                    <span>@note.DiaryDescription</span>
+                    <span class="pull-right">@note.DiaryCategory</span>
+                </h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    <span class="fa fa-clock-o"></span>
+                    <span>@string.Format("Created {0:dd MMM yy hh:mm} by {1}", note.CreatedDate, note.CreatedByUserName)</span>
+                    <span class="pull-right">@string.Format("Actioned on {0:dd MMM yy hh:mm}.", note.DateActioned)</span>
+                </h6>
+                <p class="card-text">@note.DiaryNarrative</p>
+            </div>
+        </div>
+        <br />
+
+    }
+
+</div>
+
+

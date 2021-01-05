@@ -1,0 +1,80 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.CallBackDetailsViewModel
+<div class="modal-body">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Diary Notes</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <br />
+            <div class="row">
+                <input id="queueItemID" value="@Model.CSUItem.QueueItemID" class="form-control" type="hidden" readonly />
+
+                <div class="col-sm-12">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.WescotRef"></label>
+                            <input asp-for="CSUItem.WescotRef" class="form-control" readonly />
+                        </div>
+                        <div class="form-group col-md-8">
+                            <label asp-for="QItemViewModel.CustomerName"></label>
+                            <input asp-for="QItemViewModel.CustomerName" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="QItemViewModel.AddressLine1"></label>
+                            <input asp-for="QItemViewModel.AddressLine1" class="form-control Editable" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="QItemViewModel.AddressLine2"></label>
+                            <input asp-for="QItemViewModel.AddressLine2" class="form-control Editable"  readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="QItemViewModel.AddressLine3"></label>
+                            <input asp-for="QItemViewModel.AddressLine3" class="form-control Editable"  readonly />
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="notes">
+                        Notes will appear here (as if by magic)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer"  id="footerbuttons">
+    @if (Model.QItemViewModel.CompletedBy == null)
+    {
+        <button type="button" id="ProcessCallback" onclick="ProcessCallbackClick()" class="btn btn-primary">
+            Process Letter
+        </button>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        if ($("#AdvancedSearchSetup").length) {
+            $("#footerbuttons").hide();
+        }
+    });
+</script>

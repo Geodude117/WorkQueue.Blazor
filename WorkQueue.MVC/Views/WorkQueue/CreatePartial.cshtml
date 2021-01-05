@@ -1,0 +1,186 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.CallbackQueueViewModel
+<form id="CreateFormCallback" asp-action="CreateModelQueueItm" asp-controller="WorkQueue" class="form-horizontal" method="post" data-ajax="true"
+      data-ajax-method="POST" data-ajax-update="#CreateCallback" data-ajax-begin="createBegin()" data-ajax-success="onSuccess()" data-ajax-failure="onError">
+    <hr />
+    <div class="col-sm-12">
+
+        <input id="CustomerName" asp-for="@Model.QItem.CustomerName" type="hidden" />
+
+        <div class="form-group row ">
+            <label asp-for="QItem.WescotRef" class="control-label col-sm-2 "></label>
+
+            <div class="col-sm-4">
+                @if (Model.Wesref != null)
+                {
+
+                    <input class="form-control bg-white" type="number"
+                           data-val="true" data-val-required="This field is required."
+                           id="CSUItem_WescotRef" readonly="readonly" name="CSUItem.WescotRef" value="@Model.CSUItem.WescotRef"  />
+                }
+                else
+                {
+                    <input class="form-control createCallbackInput" type="number"
+                           data-val="true" data-val-required="This field is required."
+                           data-val-range="You must be between 0 and 2,147,483,647 for a valid input." data-val-range-min="0" data-val-range-max="2147483647"
+                           data-val-number="Please enter a valid number"
+                           data-val-remote= "&amp;#39;CSUItem.WescotRef&amp;#39; is invalid."
+                           data-val-remote-additionalfields = "*.CSUItem.WescotRef"
+                           data-val-remote-url= "/WorkQueue/VerifyWorkQueue"
+                           id="CSUItem_WescotRef" name="CSUItem.WescotRef" value="@Model.CSUItem.WescotRef" />
+
+                }
+                <span class="text-danger field-validation-valid"
+                      data-valmsg-for="CSUItem.WescotRef" data-valmsg-replace="true"></span>
+            </div>
+            <label asp-for="CSUItem.ContactNumber" class="control-label col-sm-2 "></label>
+
+
+            <div class="col-sm-3">
+
+                <select id="ContactNumDropDown" class="btn btn-primary dropdown-toggle removecolour createCallbackInput" data-toggle asp-for="CSUItem.ContactNumber" asp-items="Model.ContactNumbers"
+                        data-val="true" data-val-required="This field is required">
+                    <option value="Nothing" disabled selected> - Please select option -</option>
+                </select>
+                <input hidden oninput="PostiveNumericInput()" class="form-control createCallbackInput" type="text" min="0"
+                       data-val="false" data-val-required="This field is required."
+                       id="CSUItem_ContactNumber" name="CSUItem.ContactNumber" value="@Model.CSUItem.ContactNumber" />
+
+                <span class="text-danger field-validation-valid"
+                      data-valmsg-for="CSUItem.ContactNumber" data-valmsg-replace="true"></span>
+            </div>
+
+            <div class="col-sm-1">
+                <button data-toggle="popover" data-content="Contact Number" id="PlusMinusContactNum" onclick="PlusMinusContInpt()" type="button" class="btn btn-primary"><i id="GlipMinusPlus" class="fa fa-plus-circle"></i></button>
+            </div>
+
+
+        </div>
+        <hr />
+        <div class="form-group row">
+            <label asp-for="CSUItem.DateForCallback" class="control-label col-sm-2 ">Date for Callback</label>
+            <div class="col-sm-4">
+                <input type="date" asp-for="CSUItem.DateForCallback" data-val-DateNoGreater="Date must be greater than today."
+                       class="form-control createCallbackInput" />
+                <span asp-validation-for="CSUItem.DateForCallback" class="text-danger"></span>
+            </div>
+            <label asp-for="CSUItem.TimeToAvoid" class="control-label col-sm-2 "></label>
+            <div class="col-sm-4">
+                <input class="form-control createCallbackInput" type="text" maxlength="30" minlength="3"
+                       data-val="true" data-val-required="This field is required."
+                       id="CSUItem_TimeToAvoid" name="CSUItem.TimeToAvoid" value="@Model.CSUItem.TimeToAvoid" placeholder="Enter Time To Avoid" />
+                <span class="text-danger field-validation-valid"
+                      data-valmsg-for="CSUItem.TimeToAvoid" data-valmsg-replace="true"></span>
+            </div>
+
+        </div>
+        <hr />
+        <div class="form-group row">
+            <label asp-for="CSUItem.Relationship" class="control-label col-sm-2"></label>
+            <div class="col-sm-3">
+                <select id="RelationshipDropDown"
+                        onchange="CallerNameAutoFill(this.value, '@Model.QItem.CustomerName');"
+                        class="form-control dropdown-toggle ToggleBorder createCallbackInput"
+                        data-toggle asp-for="CSUItem.Relationship" asp-items="@Model.CSURelationshipOptions()"
+                        data-val="true" data-val-required="This field is required.">
+                    <option value="Nothing" disabled selected>Select</option>
+                </select>
+                <span class="text-danger field-validation-valid"
+                      data-valmsg-for="CSUItem.Relationship" data-valmsg-replace="true"></span>
+            </div>
+            <div class="col-sm-7">
+                <input class="form-control createCallbackInput" type="text" maxlength="40" minlength="2"
+                       data-val="true" data-val-required="This field is required."
+                       id="NameOfCaller" name="CSUItem.NameOfcaller" value="@Model.CSUItem.NameOfcaller" placeholder="Enter Caller Name" />
+                <span class="text-danger field-validation-valid"
+                      data-valmsg-for="CSUItem.NameOfcaller" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <hr />
+
+        <div class="form-group row">
+            <label asp-for="CSUItem.ReasonForCallback" class="control-label col-sm-2 "></label>
+            <div class="col-sm-10">
+
+
+                <textarea class="form-control createCallbackInput" 
+                          type="text" maxlength="200" minlength="10" 
+                          style="height:90px" data-val="true" 
+                          data-val-required="This field is required." 
+                          placeholder="Enter Reason For Callback" id="CSUItem_ReasonForCallback" 
+                          name="CSUItem.ReasonForCallback" aria-required="true" aria-invalid="false"
+                          aria-describedby="CSUItem_ReasonForCallback-error"></textarea>
+
+                <span asp-validation-for="CSUItem.ReasonForCallback"  data-valmsg-replace="true" class="text-danger"></span>
+            </div>
+        </div>
+        <hr />
+
+        <input asp-for="CSUItem.ReasonForTransfer" class="form-control" type="hidden" value="Test" />
+
+        <div class="form-group row">
+            <div class="col-lg-12 control-label">
+                <a tabindex="0" class="popover-dismiss" role="button" data-toggle="popover" data-trigger="focus" title="Health Consent Information" data-content="Please ask - “Am I ok to make a brief note of what you’ve told me today; just so the person calling you understands why we’re calling you back?”"><span class="fa fa-info-circle"></span></a>
+                <label> Consent gained to note sensitive health for callback only?</label>
+                <label class="switch control-label ">
+                    <input onchange="healthissueCheck(this.checked)" id="HealthIssueCheckBox" type="checkbox">
+                    <span class="slider round createCallbackInput"></span>
+                </label>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div id="HealthIssuseInput" class="col-sm-12" style="display: none">
+                <textarea class="form-control createCallbackInput" type="text" maxlength="200" minlength="10" style="height:90px"
+                          data-val="true" data-val-required="This field is required."
+                          id="CSUItem_HealthIssue" name="CSUItem.HealthIssue" value="@Model.CSUItem.HealthIssue" placeholder="Enter Sensitive Health Issue"></textarea>
+                <span class="text-danger field-validation-vaid"
+                      data-valmsg-for="CSUItem.HealthIssue" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+        <hr />
+    </div>
+    <input asp-for="@Model.QItem.CreatedBy" type="hidden" class="form-control" />
+
+    <input asp-for="@Model.QItem.QueueID" type="hidden" />
+
+    <input asp-for="@Model.Wesref" type="hidden" />
+    <input asp-for="@Model.CSUItem.ContactNumber" type="hidden" class="createCallbackInput" />
+    <input asp-for="@Model.CSUItem.Relationship" type="hidden" class="createCallbackInput" />
+    <input asp-for="@Model.CSUItem.ReasonForCallback" type="hidden" class="createCallbackInput" />
+    <input asp-for="@Model.UserPermission" type="hidden" />
+    <input asp-for="@Model.FromAgentDesktop" type="hidden" />
+
+
+    <div align="center">
+        <div style="text-align: center; width: 500px" class="alert alert-info">
+            <b>Please delay account for a minimum of 3 days</b>
+        </div>
+    </div>
+
+    <div class="pull-right">
+        <button id="clearItem" type="button" onclick="ClearInputFieldsForCallbackCreation()" class="btn btn-warning " value="Clear">Clear</button>
+        <input id="submitItem" type="submit" class="btn btn-primary " value="Submit" />
+
+    </div>
+
+    @if ((Model.UserPermission == "WorkQUser" && Model.Wesref == null) || (Model.UserPermission == "Admin" && Model.Wesref == null))
+    {
+        <div class="pull-left">
+            <button id="CancelCallbackCreationButton" type="button" onclick="BackToWorkQueue()" class="btn btn-outline-primary" value="Cancel">Work Queue</button>
+        </div>
+    }
+
+    @if (Model.ContactNumbers != null)
+    {
+        @foreach (var x in Model.ContactNumbers)
+        {
+            var ContactNumbersString = x.Text;
+            @Html.HiddenFor(model => ContactNumbersString)
+        }
+    }
+
+</form>
+
+
+@section Scripts {
+    <script src="~/js/WorkQueueCreate.js"></script>
+}

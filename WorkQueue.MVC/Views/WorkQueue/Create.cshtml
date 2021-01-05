@@ -1,0 +1,80 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.CallbackQueueViewModel
+@{
+    ViewData["Title"] = "Work Queue Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Create Callback</h5>
+        <div id="CreateCallback" class="panel-body">
+            @Html.Partial("CreatePartial", Model)
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+
+    <script src="~/js/WorkQueueCreate.js"></script>
+
+    <script type="text/javascript">
+
+        function ClearInputFieldsForCallbackCreation() {
+            swal({
+                title: "Are you sure?",
+                text: "Current data will be lost",
+                icon: "warning",
+                confirmButtonColor: '#428bca',
+                buttons: [
+                    'No, cancel it!',
+                    'Yes, I am sure!'
+                ],
+                dangerMode: true
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    $('.createCallbackInput').each(function () {
+                        var x = $(this);
+                        if (x.is('select')) {
+                            x.val('Nothing');
+                        } else if (x.is('span')) {
+                            $('#HealthIssueCheckBox').attr('checked', false);
+                            healthissueCheck(false);
+                        } else if (x.is('input[type=date]')) {
+                            if (isDateInputSupported()) {
+                                x.val("@Model.CSUItem.DateForCallback.Date.ToString("yyyy-MM-dd")");
+                            } else {
+                                $('#CSUItem_DateForCallback').datepicker("setDate", new Date("@Model.CSUItem.DateForCallback.Date.ToString("yyyy-MM-dd")"));
+                            }
+                        } else {
+                            x.val('');;
+                        }
+                    });
+                    RemoveDisableNameOfCaller(); // as its been reset
+                    toastMe("success", "Callback fields cleared", "Fields cleared");
+                } else {
+                    toastMe("info", "Callback fields have not been cleared", "Clear Aborted");
+                }
+            });
+        }
+
+        function BackToWorkQueue(data) {
+            swal({
+                title: "Are you sure?",
+                text: "Current data will be lost",
+                icon: "warning",
+                confirmButtonColor: '#428bca',
+                buttons: [
+                    'No, cancel it!',
+                    'Yes, I am sure!'
+                ],
+            }).then(function (isConfirm) {
+                if (isConfirm) {
+                    location.href = '@Url.Action("Index", "WorkQueue", new {SelectedGroupId = Model.ReturnID})';
+                } else {
+                    toastMe("info", "Back to work queue aborted", "Cancelled");
+                }
+            });
+        }
+    </script>
+}

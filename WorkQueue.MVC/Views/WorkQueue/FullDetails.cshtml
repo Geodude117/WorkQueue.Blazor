@@ -1,0 +1,219 @@
+﻿@model IEnumerable<CallBack_Model.Model.QueueItem>
+@if (Model.FirstOrDefault() != null)
+{
+    <table class="table  " id="queueItemTable">
+        <thead>
+            <tr>
+                <th>
+                    
+                </th>
+                <th>
+                    <div align="center">RAG Rules</div>
+                </th>
+                <th>
+                    <div align="left">
+                        @Html.DisplayNameFor(model => model.First().WescotRef)
+                    </div>
+                </th>
+                <th>
+                    <div align="left">
+                        @Html.DisplayNameFor(model => model.First().CustomerName)
+                    </div>
+
+                </th>
+                <th>
+                    <div align="left">
+                        @Html.DisplayNameFor(model => model.First().DueDate)
+                    </div>
+                </th>
+                <th>
+                    <div align="left">
+                        @Html.DisplayNameFor(model => model.First().Summary)
+                    </div>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+
+            <tr>
+                <td>
+                    <div align="center">
+                        @if (item.QueueID == 1)
+                        {
+                            <span class="fa fa-phone PhoneIcon text-muted"></span>
+                        }
+                        else if (item.QueueID == 2)
+                        {
+                           <span class="fa fa-phone PhoneIcon text-muted"></span>
+                        }
+                        else if (item.QueueID == 3)
+                        {
+                            <span class=" fa fa-envelope-o LetterIcon text-muted"></span>
+                        }
+                        else if (item.QueueID == 4)
+                        {
+                            <span class="fa fa-search PhoneIcon text-muted"></span>
+                        }
+                        @if (item.Islocked == true)
+                        {
+                            <span data-toggle="tooltip" class="fa fa-lock text-muted" title="Item locked by: @item.LockedBy at @item.LockTime"></span>
+                        }
+                    </div>
+                </td>
+
+                @if (item.DueDate <= DateTime.Now.AddDays(item.RagSet.LowValue))
+                {
+                    <td data-sort="@item.RagSet.LowValue">
+                        <div align="center">
+                            <span class="fa fa-circle-o-notch RAG_Red_Fg"></span>
+                        </div>
+                    </td>
+                }
+                else
+                {
+                    if (item.DueDate >= DateTime.Now.AddDays(item.RagSet.MidValue))
+                    {
+                        <td  data-sort="@item.RagSet.HighValue">
+                            <div align="center">
+                                <span class="fa fa-circle-o-notch RAG_Green_Fg"></span>
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td  data-sort="@item.RagSet.MidValue">
+                            <div align="center">
+                                <span class="fa fa-circle-o-notch RAG_Amber_Fg"></span>
+                            </div>
+                        </td>
+                    }
+                }
+                <td>
+                    <div align="left">
+                        @Html.DisplayFor(model => item.WescotRef)
+                    </div>
+                </td>
+                <td class="customer-text">
+                        @Html.DisplayFor(model => item.CustomerName)
+                </td>
+                <td>
+                    <div align="left">
+                        <span class="d-none">@item.DueDate.Date.ToString("yyyyMMdd")</span>
+                        @item.DueDate.Date.ToString("dd/MM/yyyy")
+                    </div>
+                </td>
+                <td>
+                    
+                        @Html.DisplayFor(model => item.Summary)
+
+                </td>
+
+                <td>
+                    <div align="center">
+
+                            @{
+                                var linkProperties = new
+                                {
+                                    data_ajax = "true",
+                                    data_ajax_method = "GET",
+                                    data_ajax_mode = "replace",
+                                    data_ajax_update = "#CsuItems",
+                                    data_ajax_begin = "BeginRequest()",
+                                    data_ajax_complete = "successRequest()",
+                                    @class = "btn btn-primary"
+                                };
+                                @Html.ActionLink("View", "Details", "Callback", new
+                                {
+                                    Summary = item.Summary,
+                                    CreatedDate = item.CreatedDate,
+                                    CustomerName = item.CustomerName,
+                                    CreatedBy = item.CreatedBy,
+                                    QueueID = item.QueueID,
+                                    QueueItemID = item.QueueItemID,
+                                    CompletedBy= item.CompletedBy,
+                                    CompletedDate = item.CompletedDate,
+
+                                DisplayName = ViewBag.DisplayName,
+                                CurrentPermissions = ViewBag.CurrentPermission
+                            }, linkProperties)
+                        }
+
+
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <div id="CsuItems" class="wrapper" align="right">
+
+    </div>
+}
+
+<div id="mainoverlay" class="overlay">
+    <div id="loader">
+        <div class="cube-wrapper">
+            <div class="cube-folding">
+                <span class="leaf1"></span>
+                <span class="leaf2"></span>
+                <span class="leaf3"></span>
+                <span class="leaf4"></span>
+            </div>
+            <span class="loading" data-name="Loading">Loading</span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        if ($('#queueItemTable').val() == undefined) {
+            toastMe("error", "No results have been found", "No Results Found");
+        }
+        
+    });
+    var BeginRequest = function BeginRequest() {
+        $("#mainoverlay").addClass("active");
+    };
+
+    var successRequest = function successRequest() {
+        $("#mainoverlay").removeClass("active");
+        $('#detailsModal').modal('show');
+        
+    };
+
+    function toastMe(toastType, toastMessage, toastTitle) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        //toastr["success"]("Message", "Test")
+        toastr[toastType](toastMessage, toastTitle);
+    }
+
+
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').each(function () {
+            $(this).tooltip()
+        });
+    });
+
+</script>

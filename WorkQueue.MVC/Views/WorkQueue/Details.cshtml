@@ -1,0 +1,20 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.QueueItemsViewModel
+
+<br />
+
+<div class="row">
+    <div class="col-lg-2">
+        <button type="button" onclick="location.href = '@Url.Action("Index","Search")'" class="btn btn-outline-primary">
+            Advanced Search
+        </button>
+    </div>
+    <div class="col-lg-10">
+        <button type="button" onclick="onBegin(); location.href = '@Url.Action("Create", "WorkQueue", new{ QueueID = Model.QueueGroupID})'" class="btn btn-outline-primary pull-right">
+            Create Callback
+        </button>
+    </div>
+</div>
+
+<br />
+@Html.Partial("FullDetails", Model.QitemList)
+<br />

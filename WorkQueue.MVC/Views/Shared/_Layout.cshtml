@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.8" />
+    <title>@ViewData["Title"] - WorkQueue.MVC</title>
+    <link rel="stylesheet" href="~/lib/twitter-bootstrap/css/bootstrap.css" />
+    @*<link rel="stylesheet" href="~/css/jqueryDataTable.css" />*@
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/lib/toastr.js/toastr.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="~/lib/iCheck/skins/all.css" />
+    <link rel="stylesheet" href="~/lib/BootStrap-min/bootstrap413.min.css" />
+    <link rel="stylesheet" href="~/lib/jquery/Jquery UI/jquery-ui.min.css" />
+    @*<link rel="stylesheet" href="~/lib/DataTables/datatables.min.css" />*@
+    <link rel="stylesheet" href="~/lib/DataTables/DataTables-1.10.18/css/dataTables.bootstrap4.min.css" />
+    @*<link rel="stylesheet" href="~/lib/DataTables/Buttons-1.5.4/css/buttons.bootstrap.css" />*@
+    <link rel="stylesheet" href="~/lib/DataTables/Buttons-1.5.4/css/buttons.bootstrap4.min.css" />
+    <link rel="stylesheet" href="~/css/SquareFoldingLoader.css" />
+
+</head>
+<body>
+    <div class="container body-content">
+        @RenderBody()
+
+        <footer class="footer">
+            <div class="row">
+                <p class="col-md-12 version">&copy; @DateTime.Now.Year - Wescot Credit Services. Version 1.0.0 </p>
+            </div>
+        </footer>
+    </div>
+
+    
+
+   
+    <script type="text/javascript" src="~/lib/jquery/min-3-3-1/jquery-min-3.3.1.js"></script>
+    <script type="text/javascript" src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script type="text/javascript" src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script type="text/javascript" src="~/lib/jquery/AjaxJquery/jqueryAjax.js"></script>
+
+
+
+
+    <script type="text/javascript" src="~/lib/popper.js/umd/popper.js"></script>
+
+    <script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></script>
+
+
+    <script type="text/javascript" src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/toastr.js/toastr.min.js"></script>
+    <script type="text/javascript" src="~/lib/iCheck/icheck.js"></script>
+
+    <script  type="text/javascript"src="~/lib/jquery/Jquery UI/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="~/lib/sweetalert/sweetalert.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/Buttons-1.5.4/js/buttons.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/JSZip-2.5.0/jszip.min.js"></script>
+    <script type="text/javascript" src="~/lib/DataTables/Buttons-1.5.4/js/buttons.html5.js"></script>
+
+    <script type="text/javascript" src="~/lib/twitter-bootstrap/js/bootstrap.min.js"></script>
+
+
+
+    <script type="text/javascript" src="https://unpkg.com/tooltip.js"></script>
+
+    <environment exclude="Development">
+
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+        <script src="~/lib/sweetalert/sweetalert.min.js"></script>
+        <script src="~/lib/twitter-bootstrap/js/bootstrap.min.js"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/lib/toastr.js/toastr.min.js"></script>
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+
+    </environment>
+
+
+
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,56 @@
+﻿@using CallBack_Model.Model
+@model WorkQueue.MVC.Models.ViewModels.QueueGroupViewModel
+
+@{
+    ViewData["Title"] = "Work Queue View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+
+    <div class="card-body">
+        <div class="card-title"><h3>Work Queue</h3></div>
+        <div id="MainView">
+            <div align="left">
+                <form id="MainForm" asp-controller="WorkQueue" asp-action="Details" data-ajax="true" data-ajax-method="POST"
+                      data-ajax-mode="replace" data-ajax-begin="onBegin" data-ajax-update="#Queueitems" data-ajax-complete="onSuccess">
+                    <select id="QueueGroupDropDown" class="btn btn-primary dropdown-toggle removecolour" data-toggle asp-for="SelectedGroupId" asp-items="@Model.QueueGroupList">
+                        <option value="" disabled selected> - Please select option -</option>
+                    </select>
+                    <button id="DisplayWork" type="submit" class="btn btn-primary">Display Work</button>
+                </form>
+            </div>
+            <div id="Queueitems" align="center" style="overflow: hidden;">
+            </div>
+            <div id="loader" style="visibility: hidden;">
+                <div class="cube-wrapper">
+                    <div class="cube-folding">
+                        <span class="leaf1"></span>
+                        <span class="leaf2"></span>
+                        <span class="leaf3"></span>
+                        <span class="leaf4"></span>
+                    </div>
+                    <span class="loading" data-name="Loading">Loading</span>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(window).on('load',function () {
+            if ($('#QueueGroupDropDown')[0].selectedIndex > 0) {
+                $("#DisplayWork").click();
+            }
+        });
+    </script>
+    <script src="~/js/WorkQueueIndex.js"></script>
+}
+
+
+
+
+

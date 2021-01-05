@@ -1,0 +1,166 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.CallBackDetailsViewModel
+
+<div class="modal-body">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Diary Notes</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <br />
+            <div class="row" id="QueueItemDetails">
+
+                <div class="col-sm-12">
+                    <input asp-for="CSUItem.ID" class="form-control" type="hidden" readonly />
+                    <input id="queueItemID" asp-for="CSUItem.QueueItemID" class="form-control" type="hidden" readonly />
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.WescotRef">Reference</label>
+                            <input asp-for="CSUItem.WescotRef" class="form-control" readonly />
+                        </div>
+
+                        <div class="col-md-8">
+                            <label asp-for="QItemViewModel.CustomerName"></label>
+                            <input asp-for="QItemViewModel.CustomerName" class="form-control" readonly />
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.DateForCallback"></label>
+                            <input type="date" asp-for="CSUItem.DateForCallback" class="form-control" readonly />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.TimeToAvoid"></label>
+                            <input id="Editable_TimeToAvoid" asp-for="CSUItem.TimeToAvoid" class="form-control Editable" readonly />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Callback Type</label>
+                            <input asp-for="ActionType" class="form-control" readonly />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.NameOfcaller"></label>
+                            <input  id="Editable_NameOfCaller" asp-for="CSUItem.NameOfcaller" class="form-control Editable" readonly />
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.Relationship"></label>
+                            <select id="Editable_Relationship"
+                                    class="form-control Editable" disabled
+                                    data-toggle asp-for="CSUItem.Relationship" asp-items="@Model.CSURelationshipOptions()"
+                                    data-val="true" data-val-required="Please select a relationship.">
+                            </select>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="CSUItem.ContactNumber"></label>
+                            <input oninput="PostiveNumericInputForContactNumber()"  id="contactNumber" asp-for="CSUItem.ContactNumber"  type="text" class="form-control Editable" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label asp-for="CSUItem.ReasonForCallback"></label>
+                            <textarea id="Editable_ReasonForCallback" style="height:90px" asp-for="CSUItem.ReasonForCallback" class="form-control Editable" readonly></textarea>
+                        </div>
+                    </div>
+                    
+                    @if (@Model.CSUItem.HealthIssue != null)
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label asp-for="CSUItem.HealthIssue"></label>
+                                <textarea asp-for="CSUItem.HealthIssue" class="form-control Editable" readonly></textarea>
+                            </div>
+                        </div>
+                    }
+                   
+
+                    <div class="form-group row">
+                        <div class="col-lg-12">
+                            <small class="text-muted float-left">
+                                @string.Format("Created {0:dd MMM yy hh:mm} by {1}", Model.QItemViewModel.CreatedDate, Model.QItemViewModel.CreatedBy)
+                            </small>
+                            @if (Model.QItemViewModel.CompletedBy != null)
+                            {
+                                <small class="text-muted float-right">
+                                    @string.Format("Completed {0:dd MMM yy hh:mm} by {1}", Model.QItemViewModel.CompletedDate, Model.QItemViewModel.CompletedBy)
+                                </small>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+            <div id="Editloader" style="visibility: hidden;">
+                <div class="cube-wrapper">
+                    <div class="cube-folding">
+                        <span class="leaf1"></span>
+                        <span class="leaf2"></span>
+                        <span class="leaf3"></span>
+                        <span class="leaf4"></span>
+                    </div>
+                    <span class="loading" data-name="Loading">Loading</span>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+           
+            <div class="row">
+                <div class="col-sm-12">
+                    <div id="notes">
+                    </div>
+                </div>
+                <div id="DiaryNoteloader" style=" visibility:hidden">
+                    <div class="cube-wrapper">
+                        <div class="cube-folding">
+                            <span class="leaf1"></span>
+                            <span class="leaf2"></span>
+                            <span class="leaf3"></span>
+                            <span class="leaf4"></span>
+                        </div>
+                        <span class="loading" data-name="Loading">Loading</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer" id="footerbuttons">
+
+    @if (Model.QItemViewModel.CompletedBy == null)
+    {
+        <button type="button" id="ProcessCallback" onclick="ProcessCallbackClick()" class="btn btn-primary">
+            Process Callback
+        </button>
+
+        @if (@Model.QItemViewModel.CurrentPermissions == "Admin" || Model.QItemViewModel.CurrentPermissions == "WorkQUser")
+         {
+             <button type="button" onclick="EditButtonClick()" id="EditButton" value="Edit" class="btn btn-outline-primary">Edit</button>
+         }
+    }
+    <input onclick="ValidateFields()" id="Save" value="Save" type="button" class="btn btn-primary " style="display: none"/>
+    <button type="reset" id="Cancel" value="Cancel" onclick="CancelButtonClick()" class="btn btn-outline-danger" style="display: none">Cancel</button>
+
+</div>
+
+
+<script>
+    $( document ).ready(function() {
+        if ($("#AdvancedSearchSetup").length) {
+            $("#footerbuttons").hide();
+        }
+    });
+</script>

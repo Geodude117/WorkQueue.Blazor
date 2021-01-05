@@ -1,0 +1,269 @@
+﻿@model WorkQueue.MVC.Models.ViewModels.CallBackDetailsViewModel
+
+<div id="detailsModal" class="modal fade" tabindex="-1" role="dialog" style="text-align: left;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                @if (@Model.ActionType == "1st Callback")
+                {
+                    <h5 class="modal-title"><span class="fa fa-phone"></span> 1st Callback Details</h5>
+                }
+                else if (@Model.ActionType == "2nd Callback")
+                {
+                    <h5 class="modal-title"><span class="fa fa-phone"></span> 2nd Callback Details</h5>
+
+                }
+                else if (@Model.ActionType == "CSU Letter")
+                {
+                    <h5 class="modal-title"><span class="fa fa-envelope"></span> CSU Letter Details</h5>
+                }
+                else if (@Model.ActionType == "CSU Review")
+                {
+                    <h5 class="modal-title"><span class="fa fa-search-plus"></span> CSU Letter Review</h5>
+                }
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="DetailsForm" asp-action="Save" class="form-horizontal" asp-controller="Callback">
+
+                @if (@Model.ActionType == "1st Callback" || @Model.ActionType == "2nd Callback")
+                {
+                    @Html.Partial("CallbackDetailPartial", Model)
+                }
+                else if (@Model.ActionType == "CSU Letter" || @Model.ActionType == "CSU Review")
+                {
+                    @Html.Partial("LetterDetailPartial", Model)
+                }
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/CallbackDetails.js"></script>
+
+}
+<script type="text/javascript">
+
+    function SaveSuccess() {
+        toastMe("success", "Current Callback has been edited", "Saved");
+        $('#Save').hide();
+        $('#Cancel').hide();
+        $('#EditButton').show();
+        $('#ProcessCallback').show();
+        $('#EditButton').val('Edit');
+        $('.Editable').attr("readonly", true);
+        $('#EditButton').removeAttr("disabled");
+        $("#ProcessCallback").removeAttr("disabled");
+
+        var values = '/Callback/Unlock/' + $("#queueItemID").val();
+        $.ajax
+            ({
+                type: 'GET',
+                url: values,
+                dataType: 'html',
+            });
+    };
+    
+    function ValidateFields() {
+        $("#Save").attr("disabled", "disabled");
+        $("#Cancel").attr("disabled", "disabled");
+
+        if ($('#Editable_NameOfCaller').val() == "" || $('#Editable_ReasonForCallback').val() == "" ||
+            $('#Editable_Relationship').val() == "" || $('#contactNumber').val() == "" ||
+            $('#Editable_TimeToAvoid').val() == "")
+        {
+            $("#ProcessCallback").removeAttr("disabled");
+            $("#EditButton").removeAttr("disabled");
+            $('#Save').removeAttr("disabled");
+            $('#Cancel').removeAttr("disabled");
+            toastMe("error", "All editable fields cannot be empty", "Error");
+
+        } else {
+            LoadEditLoader();
+            $.ajax({
+                url: "@Url.Action("Save","Callback")",
+                type: "POST",
+                data: $("#DetailsForm").serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    $('#Save').removeAttr("disabled");
+                    $('#Cancel').removeAttr("disabled");
+                    UnloadEditLoader();
+                    if (response.success == true)
+                    {
+                        SaveSuccess();
+                    } else {
+                       
+                        toastMe("error", "Saved failed, please ensure data is valid", "Error");
+                    }
+                },
+                error: function ()
+                {
+                    $('#Save').removeAttr("disabled");
+                    $('#Cancel').removeAttr("disabled");
+                    toastMe("error", "All editable fields cannot be empty", "Error");
+                }
+            });
+        }
+    };
+    
+    $.get('@Url.Action("GetAccountNotes", "Callback", new {AccountNumber = Model.CSUItem.WescotRef})',
+        null,
+        function (content) {
+            $("#notes").html(content);
+        });
+
+    function LoadEditLoader() {
+        $('#Editloader').removeAttr('style');
+        $('#QueueItemDetails').css({ 'visibility': "hidden" });
+    }
+
+    function UnloadEditLoader() {
+        $('#QueueItemDetails').removeAttr('style');
+        $('#Editloader').hide();
+    }
+
+    function PostiveNumericInputForContactNumber() {
+        var valuex = document.getElementById("contactNumber").value;
+        if (!(/^\d*\d*$/.test(valuex))) {
+            document.getElementById("contactNumber").value = valuex.slice(0, -1);
+        }
+    }
+    
+    function EditButtonClick() {
+        LoadEditLoader()
+        $("#EditButton").attr("disabled", "disabled");
+        $("#ProcessCallback").attr("disabled", "disabled");
+        $('#Editable_Relationship').removeAttr('disabled');
+
+        var values = '/Callback/Lock/' + $("#queueItemID").val();
+        $.ajax
+        ({
+            type: 'GET',
+            url: values,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    var name = $('#EditButton').val();
+                    if (name == 'Edit') {
+                        UnloadEditLoader();
+                        $('#EditButton').val('Save');
+                        $('.Editable').attr("readonly", false);
+                        $('#Save').removeAttr('style');
+                        $('#Cancel').removeAttr('style');
+                        $('#EditButton').hide();
+                        $('#ProcessCallback').hide();
+                    }
+                } else {
+                    toastMe("error", "This Queue Item is locked", "Error");
+                    UnloadEditLoader();
+                }
+            },
+           
+        });
+    };
+
+    function ProcessCallbackClick() {
+        var values = '/Callback/CheckLock/' + $("#queueItemID").val();
+        $('#detailsModal').modal('hide');
+        $("#mainoverlay").addClass("active");
+        $.ajax
+        ({
+            type: 'GET',
+            url: values,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            success: function (response) {
+
+                if (response.success == false) {
+                    location.href ='@Html.Raw(@Url.Action("Action", "Callback", new
+                               {
+                                   id = Model.CSUItem.QueueItemID,
+                                   contactNumber = Model.CSUItem.ContactNumber,
+                                   addressLine1 = Model.QItemViewModel.AddressLine1,
+                                   addressLine2 = Model.QItemViewModel.AddressLine2,
+                                   addressLine3 = Model.QItemViewModel.AddressLine3
+                               }, null))'
+                } else{
+                    toastMe("error", "This Queue Item is locked", "Error");
+                    $("#mainoverlay").removeClass("active");
+                }
+            },
+            error: function (response)
+            {
+                alert("error!");  //
+            }
+        });
+    };
+
+
+    function CancelButtonClick() {
+        $('#Save').hide();
+        $('#Cancel').hide();
+        $('#ProcessCallback').show();
+        $('#EditButton').show();
+        $('#EditButton').val('Edit');
+        $("#ProcessCallback").removeAttr("disabled");
+        $("#EditButton").removeAttr("disabled");
+        $('.Editable').attr("readonly", true);
+        $('#Editable_Relationship').attr("disabled", "disabled");
+
+        toastMe("warning", "Edit was cancelled for this callback", "Edit Aborted");
+
+        var values = '/Callback/Unlock/'+$("#queueItemID").val();
+        $.ajax
+        ({
+            type: 'GET',
+            url: values,
+            dataType: 'html',
+        });
+    };
+
+    function toastMe(toastType, toastMessage, toastTitle) {
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+        toastr[toastType](toastMessage, toastTitle)
+    }
+
+    $('#detailsModal').on('hidden.bs.modal', function (e)
+    {
+        var name = $('#EditButton').val();
+        if (name == 'Save') {
+            var values = '/Callback/Unlock/'+$("#queueItemID").val();
+            $.ajax
+            ({
+                type: 'GET',
+                url: values,
+                dataType: 'html'
+            });
+        }
+
+    })
+
+
+</script>
+
+
